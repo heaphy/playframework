@@ -18,13 +18,13 @@ public abstract class Cache {
 
     /**
      * The underlying cache implementation
-     * cacheµÄÊµÏÖ,Èç¹ûÏëĞŞ¸Ä»º´æµÄÊµÏÖ£¬¸²¸Ç¸ÃÊôĞÔÎŞĞ§µÄ,Ö»ÄÜ¸²¸ÇforcedCacheImplÊôĞÔ
+     * cacheçš„å®ç°,å¦‚æœæƒ³ä¿®æ”¹ç¼“å­˜çš„å®ç°ï¼Œè¦†ç›–è¯¥å±æ€§æ— æ•ˆçš„,åªèƒ½è¦†ç›–forcedCacheImplå±æ€§
      */ 
     public static CacheImpl cacheImpl;
     
     /**
      * Sometime we REALLY need to change the implementation :)
-     * ÓÃÓÚ¸Ä³É»º´æµÄÊµÏÖ£¬playÏÖÔÚÖ»Ö§³Öehcache£¬ºÍMemacacheÁ½ÖÖ£¬Èç¹ûĞèÒª¸Ä±äcache£¬¿ÉÒÔĞŞ¸Ä¸ÃÊôĞÔ
+     * ç”¨äºæ”¹æˆç¼“å­˜çš„å®ç°ï¼Œplayç°åœ¨åªæ”¯æŒehcacheï¼Œå’ŒMemacacheä¸¤ç§ï¼Œå¦‚æœéœ€è¦æ”¹å˜cacheï¼Œå¯ä»¥ä¿®æ”¹è¯¥å±æ€§
      */
     public static CacheImpl forcedCacheImpl;
 
@@ -199,7 +199,7 @@ public abstract class Cache {
      * @param key The element key
      * @return If the element an eventually been deleted
      * 
-     * ÓëdeleteµÄÇø±ğÊÇ£¬´Ë·½·¨»á·µ»Ø¸Ä¶ÔÏóÊÇ·ñÉ¾³ı³É¹¦
+     * ä¸deleteçš„åŒºåˆ«æ˜¯ï¼Œæ­¤æ–¹æ³•ä¼šè¿”å›æ”¹å¯¹è±¡æ˜¯å¦åˆ é™¤æˆåŠŸ
      */
     public static boolean safeDelete(String key) {
         return cacheImpl.safeDelete(key);
@@ -226,14 +226,14 @@ public abstract class Cache {
 
     /**
      * Initialize the cache system.
-     * ³õÊ¼»¯·½·¨µ÷ÓÃ´¦ play.Play.start()
+     * åˆå§‹åŒ–æ–¹æ³•è°ƒç”¨å¤„ play.Play.start()
      */
     public static void init() {
         if(forcedCacheImpl != null) {
             cacheImpl = forcedCacheImpl;
             return;
         }
-        //Èç¹û*.confÅäÖÃÎÄ¼şÖĞ´ò¿ªÁËmemcached»º´æ¾ÍÊÇÓÃmemcached»º´æ
+        //å¦‚æœ*.confé…ç½®æ–‡ä»¶ä¸­æ‰“å¼€äº†memcachedç¼“å­˜å°±æ˜¯ç”¨memcachedç¼“å­˜
         if (Play.configuration.getProperty("memcached", "disabled").equals("enabled")) {
             try {
                 cacheImpl = MemcachedImpl.getInstance(true);
@@ -241,7 +241,7 @@ public abstract class Cache {
             } catch (Exception e) {
                 Logger.error(e, "Error while connecting to memcached");
                 Logger.warn("Fallback to local cache");
-                //Èç¹ûÁ¬½Ómemacache»º´æÊ§°ÜÁË£¬Ôò»¹ÊÇÊ¹ÓÃehcache»º´æ
+                //å¦‚æœè¿æ¥memacacheç¼“å­˜å¤±è´¥äº†ï¼Œåˆ™è¿˜æ˜¯ä½¿ç”¨ehcacheç¼“å­˜
                 cacheImpl = EhCacheImpl.getInstance();
             }
         } else {
@@ -251,7 +251,7 @@ public abstract class Cache {
 
     /**
      * Stop the cache system.
-     * ¹Ø±Õ»º´æ£¬Ö»ÓÃ¹Ø±Õ cacheImpl £¬ÊÇÒòÎª init() ·½·¨ÖĞÈç¹û  forcedCacheImpl != null ¾Í»á  cacheImpl = forcedCacheImpl; ½øĞĞ¸³Öµ£¬ËùÒÔÖ»Ğè¹Ø±ÕÒ»¸ö
+     * å…³é—­ç¼“å­˜ï¼Œåªç”¨å…³é—­ cacheImpl ï¼Œæ˜¯å› ä¸º init() æ–¹æ³•ä¸­å¦‚æœ  forcedCacheImpl != null å°±ä¼š  cacheImpl = forcedCacheImpl; è¿›è¡Œèµ‹å€¼ï¼Œæ‰€ä»¥åªéœ€å…³é—­ä¸€ä¸ª
      */
     public static void stop() {
         cacheImpl.stop();
@@ -259,7 +259,7 @@ public abstract class Cache {
     
     /**
      * Utility that check that an object is serializable.
-     * ¼ì²éÒ»ÏÂĞèÒª»º´æµÄ¶ÔÏó£¬ÊÇ·ñ¿ÉÒÔĞòÁĞ»¯,Èç¹û²»ÄÜĞòÁĞ»¯ÎŞ·¨Ê¹ÓÃ»º´æ£¬ÔòÅ×³öÒì³£
+     * æ£€æŸ¥ä¸€ä¸‹éœ€è¦ç¼“å­˜çš„å¯¹è±¡ï¼Œæ˜¯å¦å¯ä»¥åºåˆ—åŒ–,å¦‚æœä¸èƒ½åºåˆ—åŒ–æ— æ³•ä½¿ç”¨ç¼“å­˜ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
      */
     static void checkSerializable(Object value) {
         if(value != null && !(value instanceof Serializable)) {
