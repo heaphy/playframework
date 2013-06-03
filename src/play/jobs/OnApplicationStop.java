@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 程序关闭时执行
  * A job run when the application is stopped under graceful circumstances.
  *
  */

@@ -38,6 +38,7 @@ public class Job<V> extends Invoker.Invocation implements Callable<V> {
     }
     
     /**
+     * 子类覆盖此方法，用于处理没有返回值的任务
      * Here you do the job
      */
     public void doJob() throws Exception {
