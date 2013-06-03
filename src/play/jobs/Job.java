@@ -18,6 +18,7 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 /**
+ * 定时任务超类，所有定时任务继承此类，加上泛型可以做有返回值的任务
  * A job is an asynchronously executed unit of work
  * @param <V> The job result type (if any)
  */
@@ -27,10 +28,10 @@ public class Job<V> extends Invoker.Invocation implements Callable<V> {
     
     protected ExecutorService executor;
     protected long lastRun = 0;
-    protected boolean wasError = false;
-    protected Throwable lastException = null;
+    protected boolean wasError = false; // 判断是否产生错误
+    protected Throwable lastException = null; // 最后产生的异常
 
-    Date nextPlannedExecution = null;
+    Date nextPlannedExecution = null; // 下一步计划执行时间
 
     @Override
     public InvocationContext getInvocationContext() {
@@ -38,13 +39,14 @@ public class Job<V> extends Invoker.Invocation implements Callable<V> {
     }
     
     /**
-     * 子类覆盖此方法，用于处理没有返回值的任务
+     * 子类重写此方法，用于处理没有返回值的任务
      * Here you do the job
      */
     public void doJob() throws Exception {
     }
 
     /**
+     * 由子类重写，处理有返回值的任务 （可以看到如果只重写doJob，调用doJobWithResult也会主动调用doJob）
      * Here you do the job and return a result
      */
     public V doJobWithResult() throws Exception {
@@ -57,6 +59,7 @@ public class Job<V> extends Invoker.Invocation implements Callable<V> {
     }
 
     /**
+     * 立即执行定时器任务
      * Start this job now (well ASAP)
      * @return the job completion
      */
@@ -116,6 +119,9 @@ public class Job<V> extends Invoker.Invocation implements Callable<V> {
         JobsPlugin.executor.scheduleWithFixedDelay(this, seconds, seconds, TimeUnit.SECONDS);
     }
 
+    /**
+     * 产生错误时，错误接管方法
+     */
     // Customize Invocation
     @Override
     public void onException(Throwable e) {
@@ -128,6 +134,9 @@ public class Job<V> extends Invoker.Invocation implements Callable<V> {
         }
     }
 
+    /**
+     * 实现Callable中run方法，供启动线程时调用
+     */
     @Override
     public void run() {
         call();
@@ -171,6 +180,9 @@ public class Job<V> extends Invoker.Invocation implements Callable<V> {
         return null;
     }
 
+    /**
+     * 
+     */
     @Override
     public void _finally() {
         super._finally();
