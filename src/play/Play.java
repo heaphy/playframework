@@ -613,6 +613,7 @@ public class Play {
     }
 
     /**
+     * 检测java文件，配置文件是否修改
      * Detect sources modifications
      */
     public static synchronized void detectChanges() {

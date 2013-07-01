@@ -12,15 +12,19 @@ import play.vfs.VirtualFile;
 
 /**
  * Messages plugin
+ * play框架，message的插件
  */
 public class MessagesPlugin extends PlayPlugin {
 
+	//最后文件更新时间
     static Long lastLoading = 0L;
 
     @Override
     public void onApplicationStart() {
+    	//默认的语言
         Messages.defaults = new Properties();
         try {
+        	//默认用 resources/messages 作为默认的消息
             FileInputStream is = new FileInputStream(new File(Play.frameworkPath, "resources/messages"));
             Messages.defaults.putAll(IO.readUtf8Properties(is));
         } catch(Exception e) {

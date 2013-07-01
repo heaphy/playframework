@@ -585,6 +585,11 @@ public class ActionInvoker {
         return result;
     }
 
+    /**
+     * 获取执行的Controller 和 方法
+     * @param fullAction 完整的请求路径
+     * @return
+     */
     public static Object[] getActionMethod(String fullAction) {
         Method actionMethod = null;
         Class controllerClass = null;
