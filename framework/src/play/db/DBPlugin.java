@@ -17,6 +17,7 @@ import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import java.sql.SQLFeatureNotSupportedException;
 
 import jregex.Matcher;
 import org.apache.commons.lang.StringUtils;
@@ -290,6 +291,10 @@ public class DBPlugin extends PlayPlugin {
 
         ProxyDriver(Driver d) {
             this.driver = d;
+        }
+
+        public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+            return null;
         }
 
         public boolean acceptsURL(String u) throws SQLException {
