@@ -133,7 +133,7 @@ public class Server {
                 return a.substring(s.length());
             }
         }
-        return defaultValue; 
+        return defaultValue;
     }
 
     private static void writePID(File root) {
@@ -147,16 +147,24 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
         File root = new File(System.getProperty("application.path"));
+
+        //是否使用预编译的字节码
         if (System.getProperty("precompiled", "false").equals("true")) {
             Play.usePrecompiled = true;
         }
         if (System.getProperty("writepid", "false").equals("true")) {
             writePID(root);
         }
+
+        //完成类属性的初始化，如果usePrecompiled=true则从precompiled目录下读取字节码,且mode=PROD
+        //否则编译到tmp目录下
         Play.init(root, System.getProperty("play.id", ""));
+
         if (System.getProperty("precompile") == null) {
+            //启动应用
             new Server(args);
         } else {
+            //完成预编译等
             Logger.info("Done.");
         }
     }

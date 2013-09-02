@@ -48,95 +48,117 @@ public class Play {
             return this == PROD;
         }
     }
+
     /**
-     * Is the application initialized
+     * 应用是否已经初始化
      */
     public static boolean initialized = false;
 
     /**
-     * Is the application started
+     * 应用是否已启动
      */
     public static boolean started = false;
+
     /**
      * True when the one and only shutdown hook is enabled
      */
     private static boolean shutdownHookEnabled = false;
+
     /**
      * The framework ID
      */
     public static String id;
+
     /**
-     * The application mode
+     * 应用启动模式
      */
     public static Mode mode;
+
     /**
-     * The application root
+     * 应用所在路径
      */
     public static File applicationPath = null;
+
     /**
      * tmp dir
      */
     public static File tmpDir = null;
+
     /**
      * tmp dir is readOnly
      */
     public static boolean readOnlyTmp = false;
+
     /**
      * The framework root
      */
     public static File frameworkPath = null;
+
     /**
      * All loaded application classes
      */
     public static ApplicationClasses classes;
+
     /**
      * The application classLoader
      */
     public static ApplicationClassloader classloader;
+
     /**
      * All paths to search for files
      */
     public static List<VirtualFile> roots = new ArrayList<VirtualFile>(16);
+
     /**
      * All paths to search for Java files
      */
     public static List<VirtualFile> javaPath;
+
     /**
      * All paths to search for templates files
      */
     public static List<VirtualFile> templatesPath;
+
     /**
      * Main routes file
      */
     public static VirtualFile routes;
+
     /**
      * Plugin routes files
      */
     public static Map<String, VirtualFile> modulesRoutes;
+
     /**
      * The main application.conf
      */
     public static VirtualFile conf;
+
     /**
      * The app configuration (already resolved from the framework id)
      */
     public static Properties configuration;
+
     /**
      * The last time than the application has started
      */
     public static long startedAt;
+
     /**
      * The list of supported locales
      */
     public static List<String> langs = new ArrayList<String>(16);
+
     /**
      * The very secret key
      */
     public static String secretKey;
+
     /**
      * pluginCollection that holds all loaded plugins and all enabled plugins..
      */
     public static PluginCollection pluginCollection = new PluginCollection();
+
     /**
      * Readonly list containing currently enabled plugins.
      * This list is updated from pluginCollection when pluginCollection is modified
@@ -145,21 +167,28 @@ public class Play {
      */
     @Deprecated
     public static List<PlayPlugin> plugins = pluginCollection.getEnabledPlugins();
+
     /**
      * Modules
      */
     public static Map<String, VirtualFile> modules = new HashMap<String, VirtualFile>(16);
+
     /**
      * Framework version
      */
     public static String version = null;
+
     /**
      * Context path (when several application are deployed on the same host)
      */
     public static String ctxPath = "";
     static boolean firstStart = true;
     public static boolean usePrecompiled = false;
+
+    @Deprecated //无用字段
     public static boolean forceProd = false;
+
+    @Deprecated //无用字段
     /**
      * Lazy load the templates on demand
      */
@@ -203,7 +232,7 @@ public class Play {
         String logLevel = configuration.getProperty("application.log", "INFO");
 
         //only override log-level if Logger was not configured manually
-        if( !Logger.configuredManually) {
+        if (!Logger.configuredManually) {
             Logger.setUp(logLevel);
         }
         Logger.recordCaller = Boolean.parseBoolean(configuration.getProperty("application.log.recordCaller", "false"));
@@ -247,8 +276,10 @@ public class Play {
         ctxPath = configuration.getProperty("http.path", ctxPath);
 
         // Build basic java source path
+        //自定义的虚拟文件系统
         VirtualFile appRoot = VirtualFile.open(applicationPath);
         roots.add(appRoot);
+        //CopyOnWriteArrayList线程安全的ArrayList
         javaPath = new CopyOnWriteArrayList<VirtualFile>();
         javaPath.add(appRoot.child("app"));
         javaPath.add(appRoot.child("conf"));
@@ -261,7 +292,7 @@ public class Play {
             templatesPath = new ArrayList<VirtualFile>(1);
         }
 
-        // Main route file
+        // Main route file, VirtualFile
         routes = appRoot.child("conf/routes");
 
         // Plugin route files
@@ -283,18 +314,19 @@ public class Play {
 
         // Default cookie domain
         Http.Cookie.defaultDomain = configuration.getProperty("application.defaultCookieDomain", null);
-        if (Http.Cookie.defaultDomain!=null) {
+        if (Http.Cookie.defaultDomain != null) {
             Logger.info("Using default cookie domain: " + Http.Cookie.defaultDomain);
         }
 
         // Plugins
         pluginCollection.loadPlugins();
 
-        // 只要是生产模式，必须先预编译，如果是调用预编译命令，则默认是生产模式
+        // 只要是生产模式，必须先预编译，如果是启用precompiled，则默认是生产模式
+        // precompile时只执行preCompile，而不会start
         if (mode == Mode.PROD || System.getProperty("precompile") != null) {
             mode = Mode.PROD;
             if (preCompile() && System.getProperty("precompile") == null) {
-                start();
+                start();//在生产模式下启动
             } else {
                 return;
             }
@@ -349,7 +381,7 @@ public class Play {
         }
         seenFileNames.add(filename);
 
-        Properties propsFromFile=null;
+        Properties propsFromFile = null;
 
         VirtualFile appRoot = VirtualFile.open(applicationPath);
         conf = appRoot.child("conf/" + filename);
@@ -357,7 +389,7 @@ public class Play {
             propsFromFile = IO.readUtf8Properties(conf.inputstream());
         } catch (RuntimeException e) {
             if (e.getCause() instanceof IOException) {
-                Logger.fatal("Cannot read "+filename);
+                Logger.fatal("Cannot read " + filename);
                 fatalServerErrorOccurred();
             }
         }
@@ -414,7 +446,7 @@ public class Play {
             if (key.toString().startsWith("@include.")) {
                 try {
                     String filenameToInclude = propsFromFile.getProperty(key.toString());
-                    toInclude.putAll( readOneConfigurationFile(filenameToInclude, seenFileNames) );
+                    toInclude.putAll(readOneConfigurationFile(filenameToInclude, seenFileNames));
                 } catch (Exception ex) {
                     Logger.warn("Missing include: %s", key);
                 }
@@ -430,13 +462,14 @@ public class Play {
      * Recall to restart !
      */
     public static synchronized void start() {
+        System.out.println("in start");
         try {
 
             if (started) {
                 stop();
             }
 
-            if( standalonePlayServer) {
+            if (standalonePlayServer) {
                 // Can only register shutdown-hook if running as standalone server
                 if (!shutdownHookEnabled) {
                     //registers shutdown hook - Now there's a good chance that we can notify
@@ -464,7 +497,7 @@ public class Play {
             // Configure logs
             String logLevel = configuration.getProperty("application.log", "INFO");
             //only override log-level if Logger was not configured manually
-            if( !Logger.configuredManually) {
+            if (!Logger.configuredManually) {
                 Logger.setUp(logLevel);
             }
             Logger.recordCaller = Boolean.parseBoolean(configuration.getProperty("application.log.recordCaller", "false"));
@@ -486,13 +519,13 @@ public class Play {
 
             // Default web encoding
             String _defaultWebEncoding = configuration.getProperty("application.web_encoding");
-            if( _defaultWebEncoding != null ) {
+            if (_defaultWebEncoding != null) {
                 Logger.info("Using custom default web encoding: " + _defaultWebEncoding);
                 defaultWebEncoding = _defaultWebEncoding;
                 // Must update current response also, since the request/response triggering
                 // this configuration-loading in dev-mode have already been
                 // set up with the previous encoding
-                if( Http.Response.current() != null ) {
+                if (Http.Response.current() != null) {
                     Http.Response.current().encoding = _defaultWebEncoding;
                 }
             }
@@ -534,11 +567,17 @@ public class Play {
 
         } catch (PlayException e) {
             started = false;
-            try { Cache.stop(); } catch (Exception ignored) {}
+            try {
+                Cache.stop();
+            } catch (Exception ignored) {
+            }
             throw e;
         } catch (Exception e) {
             started = false;
-            try { Cache.stop(); } catch (Exception ignored) {}
+            try {
+                Cache.stop();
+            } catch (Exception ignored) {
+            }
             throw new UnexpectedException(e);
         }
     }
@@ -557,13 +596,14 @@ public class Play {
     }
 
     /**
-     * Force all java source and template compilation.
+     * 编译JAVA代码和模版，只有在MODE=PROD时调用.
      *
      * @return success ?
      */
     static boolean preCompile() {
         if (usePrecompiled) {
             if (Play.getFile("precompiled").exists()) {
+                //只要启用precompiled配置，则一定调用classloader.getAllClasses()
                 classloader.getAllClasses();
                 Logger.info("Application is precompiled");
                 return true;
@@ -607,7 +647,7 @@ public class Play {
         }
         try {
             pluginCollection.beforeDetectingChanges();
-            if(!pluginCollection.detectClassesChange()) {
+            if (!pluginCollection.detectClassesChange()) {
                 classloader.detectChanges();
             }
             Router.detectChanges(ctxPath);
@@ -629,9 +669,8 @@ public class Play {
 
     @SuppressWarnings("unchecked")
     public static <T> T plugin(Class<T> clazz) {
-        return (T)pluginCollection.getPluginInstance((Class<? extends PlayPlugin>)clazz);
+        return (T) pluginCollection.getPluginInstance((Class<? extends PlayPlugin>) clazz);
     }
-
 
 
     /**
@@ -777,15 +816,16 @@ public class Play {
     /**
      * Returns true if application is runing in test-mode.
      * Test-mode is resolved from the framework id.
-     *
+     * <p/>
      * Your app is running in test-mode if the framwork id (Play.id)
      * is 'test' or 'test-?.*'
+     *
      * @return true if testmode
      */
-    public static boolean runingInTestMode(){
+    public static boolean runingInTestMode() {
         return id.matches("test|test-?.*");
     }
-    
+
 
     /**
      * Call this method when there has been a fatal error that Play cannot recover from
