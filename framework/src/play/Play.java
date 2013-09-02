@@ -1,17 +1,5 @@
 package play;
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.LineNumberReader;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import play.cache.Cache;
 import play.classloading.ApplicationClasses;
 import play.classloading.ApplicationClassloader;
@@ -24,6 +12,14 @@ import play.plugins.PluginCollection;
 import play.templates.TemplateLoader;
 import play.utils.OrderSafeProperties;
 import play.vfs.VirtualFile;
+
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Main framework class
@@ -243,6 +239,7 @@ public class Play {
         // Mode
         mode = Mode.valueOf(configuration.getProperty("application.mode", "DEV").toUpperCase());
         if (usePrecompiled || forceProd) {
+            //使用生产模式启动，usePrecompiled表示启动时使用预编译了的文件
             mode = Mode.PROD;
         }
 
@@ -293,7 +290,7 @@ public class Play {
         // Plugins
         pluginCollection.loadPlugins();
 
-        // Done !
+        // 只要是生产模式，必须先预编译，如果是调用预编译命令，则默认是生产模式
         if (mode == Mode.PROD || System.getProperty("precompile") != null) {
             mode = Mode.PROD;
             if (preCompile() && System.getProperty("precompile") == null) {
