@@ -76,7 +76,6 @@ public class LoggerTest {
     public void tearDown() throws Exception {
     }
 
-
     /**
      * Test method for {@link play.Logger#init()}.
      */

@@ -68,6 +68,7 @@ public class Server {
         );
         try {
             if (httpPort != -1) {
+                //绑定服务通道工厂，工厂中设置handler
                 bootstrap.setPipelineFactory(new HttpServerPipelineFactory());
                 bootstrap.bind(new InetSocketAddress(address, httpPort));
                 bootstrap.setOption("child.tcpNoDelay", true);
@@ -93,9 +94,10 @@ public class Server {
             Play.fatalServerErrorOccurred();
         }
 
-        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(
-                Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
-        );
+// 为什么需要第二次初始化？
+//        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(
+//                Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
+//        );
 
         try {
             if (httpsPort != -1) {
