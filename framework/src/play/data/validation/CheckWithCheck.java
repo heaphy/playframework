@@ -1,13 +1,13 @@
 package play.data.validation;
 
-import java.lang.reflect.Constructor;
-import java.util.Map;
-import java.util.TreeMap;
-
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import play.exceptions.UnexpectedException;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
+import java.util.TreeMap;
 
 @SuppressWarnings("serial")
 public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
@@ -23,9 +23,9 @@ public class CheckWithCheck extends AbstractAnnotationCheck<CheckWith> {
         try {
             Constructor<?> constructor = checkWith.value().getDeclaredConstructor();
             constructor.setAccessible(true);
-            check = (Check)constructor.newInstance();
+            check = (Check) constructor.newInstance();
             check.checkWithCheck = this;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new UnexpectedException(e);
         }
     }

@@ -1,8 +1,9 @@
 package play.exceptions;
 
+import play.vfs.VirtualFile;
+
 import java.util.Arrays;
 import java.util.List;
-import play.vfs.VirtualFile;
 
 /**
  * A java compilation error
@@ -38,7 +39,7 @@ public class CompilationException extends PlayException implements SourceAttachm
     public String getErrorDescription() {
         return String.format("The file <strong>%s</strong> could not be compiled.\nError raised is : <strong>%s</strong>", isSourceAvailable() ? source.relativePath() : "", problem.toString().replace("<", "&lt;"));
     }
-    
+
     @Override
     public String getMessage() {
         return problem;
@@ -46,8 +47,8 @@ public class CompilationException extends PlayException implements SourceAttachm
 
     public List<String> getSource() {
         String sourceCode = source.contentAsString();
-        if(start != -1 && end != -1) {
-            if(start.equals(end)) {
+        if (start != -1 && end != -1) {
+            if (start.equals(end)) {
                 sourceCode = sourceCode.substring(0, start + 1) + "↓" + sourceCode.substring(end + 1);
             } else {
                 sourceCode = sourceCode.substring(0, start) + "\000" + sourceCode.substring(start, end + 1) + "\001" + sourceCode.substring(end + 1);
@@ -78,5 +79,5 @@ public class CompilationException extends PlayException implements SourceAttachm
     public boolean isSourceAvailable() {
         return source != null && line != null;
     }
-    
+
 }

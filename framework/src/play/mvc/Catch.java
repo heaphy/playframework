@@ -10,9 +10,10 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Catch { 
+public @interface Catch {
 
     Class<?>[] value() default {};
+
     /**
      * Interceptor priority (0 is high priority)
      */

@@ -1,13 +1,5 @@
 package play.mvc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.*;
 import play.Logger;
@@ -21,6 +13,9 @@ import play.templates.Template;
 import play.templates.TemplateLoader;
 
 import javax.mail.internet.InternetAddress;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Application mailer support

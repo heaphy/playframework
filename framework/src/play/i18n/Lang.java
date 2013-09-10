@@ -1,11 +1,12 @@
 package play.i18n;
 
-import java.util.Locale;
 import play.Logger;
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
+
+import java.util.Locale;
 
 /**
  * Language support
@@ -16,6 +17,7 @@ public class Lang {
 
     /**
      * Retrieve the current language or null
+     *
      * @return The current language (fr, ja, it ...) or null
      */
     public static String get() {
@@ -23,9 +25,9 @@ public class Lang {
         if (locale == null) {
             // don't have current locale for this request - must try to resolve it
             Http.Request currentRequest = Http.Request.current();
-            if (currentRequest!=null) {
+            if (currentRequest != null) {
                 // we have a current request - lets try to resolve language from it
-                resolvefrom( currentRequest );
+                resolvefrom(currentRequest);
             } else {
                 // don't have current request - just use default
                 setDefaultLocale();
@@ -37,9 +39,9 @@ public class Lang {
     }
 
 
-
     /**
      * Force the current language
+     *
      * @param locale (fr, ja, it ...)
      * @return false if the language is not supported by the application
      */
@@ -63,7 +65,8 @@ public class Lang {
 
 
     /**
-     * Change language for next requests 
+     * Change language for next requests
+     *
      * @param locale (fr, ja, it ...)
      */
     public static void change(String locale) {
@@ -79,6 +82,7 @@ public class Lang {
      * <li>if <b>Accept-Language</b> header is set, use it only if the Play! application allows it.<br/>supported language may be defined in application configuration, eg : <em>play.langs=fr,en,de)</em></li>
      * <li>otherwise, server's locale language is assumed
      * </ol>
+     *
      * @param request
      */
     private static void resolvefrom(Request request) {
@@ -86,7 +90,7 @@ public class Lang {
         String cn = Play.configuration.getProperty("application.lang.cookie", "PLAY_LANG");
         if (request.cookies.containsKey(cn)) {
             String localeFromCookie = request.cookies.get(cn).value;
-            if (localeFromCookie != null && localeFromCookie.trim().length()>0) {
+            if (localeFromCookie != null && localeFromCookie.trim().length() > 0) {
                 if (set(localeFromCookie)) {
                     // we're using locale from cookie
                     return;
@@ -98,9 +102,9 @@ public class Lang {
 
         }
         // Try from accept-language - look for an exact match
-        for (String a: request.acceptLanguage()) {
+        for (String a : request.acceptLanguage()) {
             a = a.replace("-", "_").toLowerCase();
-            for (String locale: Play.langs) {
+            for (String locale : Play.langs) {
                 if (locale.toLowerCase().equals(a)) {
                     set(locale);
                     return;
@@ -108,11 +112,11 @@ public class Lang {
             }
         }
         // now see if we have a country-only match
-        for (String a: request.acceptLanguage()) {
+        for (String a : request.acceptLanguage()) {
             if (a.indexOf("-") > 0) {
                 a = a.substring(0, a.indexOf("-"));
             }
-            for (String locale: Play.langs) {
+            for (String locale : Play.langs) {
                 if (locale.equals(a)) {
                     set(locale);
                     return;
@@ -132,9 +136,8 @@ public class Lang {
     }
 
     /**
-     *
      * @return the default locale if the Locale cannot be found otherwise the locale
-     * associated to the current Lang.
+     *         associated to the current Lang.
      */
     public static Locale getLocale() {
         String lang = get();
@@ -145,7 +148,7 @@ public class Lang {
         return Locale.getDefault();
     }
 
-     public static Locale getLocale(String lang) {
+    public static Locale getLocale(String lang) {
         for (Locale locale : Locale.getAvailableLocales()) {
             if (locale.getLanguage().equals(lang)) {
                 return locale;

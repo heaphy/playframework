@@ -1,16 +1,6 @@
 package play.classloading.enhancers;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.Stack;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
+import javassist.*;
 import javassist.bytecode.annotation.Annotation;
 import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
@@ -19,8 +9,14 @@ import play.Logger;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.exceptions.UnexpectedException;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.Stack;
+
 /**
- * Enhance controllers classes. 
+ * Enhance controllers classes.
  */
 public class ControllersEnhancer extends Enhancer {
 
@@ -92,9 +88,9 @@ public class ControllersEnhancer extends Enhancer {
                     try {
                         ctMethod.insertBefore(
                                 "if(play.mvc.Controller._currentReverse.get() != null) {"
-                                + "play.mvc.Controller.redirect(\"" + ctClass.getName().replace("$", "") + "." + ctMethod.getName() + "\", $args);"
-                                + generateValidReturnStatement(ctMethod.getReturnType())
-                                + "}");
+                                        + "play.mvc.Controller.redirect(\"" + ctClass.getName().replace("$", "") + "." + ctMethod.getName() + "\", $args);"
+                                        + generateValidReturnStatement(ctMethod.getReturnType())
+                                        + "}");
 
                         ctMethod.insertBefore(
                                 "((java.util.Stack)play.classloading.enhancers.ControllersEnhancer.currentAction.get()).push(\"" + ctClass.getName().replace("$", "") + "." + ctMethod.getName() + "\");");
@@ -115,9 +111,9 @@ public class ControllersEnhancer extends Enhancer {
                     try {
                         ctMethod.insertBefore(
                                 "if(!play.classloading.enhancers.ControllersEnhancer.ControllerInstrumentation.isActionCallAllowed()) {"
-                                + "play.mvc.Controller.redirect(\"" + ctClass.getName().replace("$", "") + "." + ctMethod.getName() + "\", $args);"
-                                + generateValidReturnStatement(ctMethod.getReturnType()) + "}"
-                                + "play.classloading.enhancers.ControllersEnhancer.ControllerInstrumentation.stopActionCall();");
+                                        + "play.mvc.Controller.redirect(\"" + ctClass.getName().replace("$", "") + "." + ctMethod.getName() + "\", $args);"
+                                        + generateValidReturnStatement(ctMethod.getReturnType()) + "}"
+                                        + "play.classloading.enhancers.ControllersEnhancer.ControllerInstrumentation.stopActionCall();");
 
                     } catch (Exception e) {
                         Logger.error(e, "Error in ControllersEnhancer. %s.%s has not been properly enhanced (auto-redirect).", applicationClass.name, ctMethod.getName());
@@ -194,6 +190,7 @@ public class ControllersEnhancer extends Enhancer {
         public static void stopActionCall() {
             allow.set(false);
         }
+
         static ThreadLocal<Boolean> allow = new ThreadLocal<Boolean>();
     }
 

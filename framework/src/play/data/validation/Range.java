@@ -1,10 +1,11 @@
 package play.data.validation;
 
+import net.sf.oval.configuration.annotation.Constraint;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.sf.oval.configuration.annotation.Constraint;
 
 /**
  * This field must be lower than and greater than.
@@ -19,7 +20,9 @@ import net.sf.oval.configuration.annotation.Constraint;
 public @interface Range {
 
     String message() default RangeCheck.mes;
+
     double min() default Double.MIN_VALUE;
+
     double max() default Double.MAX_VALUE;
 }
 

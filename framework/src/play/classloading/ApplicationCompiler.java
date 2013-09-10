@@ -1,18 +1,9 @@
 package play.classloading;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import org.eclipse.jdt.core.compiler.IProblem;
+import org.eclipse.jdt.internal.compiler.*;
+import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.jdt.internal.compiler.ClassFile;
-import org.eclipse.jdt.internal.compiler.CompilationResult;
-import org.eclipse.jdt.internal.compiler.DefaultErrorHandlingPolicies;
-import org.eclipse.jdt.internal.compiler.ICompilerRequestor;
-import org.eclipse.jdt.internal.compiler.IErrorHandlingPolicy;
-import org.eclipse.jdt.internal.compiler.IProblemFactory;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
@@ -20,13 +11,16 @@ import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
-import org.eclipse.jdt.internal.compiler.Compiler;
-
 import play.Logger;
 import play.Play;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.exceptions.CompilationException;
 import play.exceptions.UnexpectedException;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Java compiler (uses eclipse JDT)
@@ -51,16 +45,16 @@ public class ApplicationCompiler {
         this.settings.put(CompilerOptions.OPTION_Encoding, "UTF-8");
         this.settings.put(CompilerOptions.OPTION_LocalVariableAttribute, CompilerOptions.GENERATE);
         String javaVersion = CompilerOptions.VERSION_1_5;
-        if(System.getProperty("java.version").startsWith("1.6")) {
+        if (System.getProperty("java.version").startsWith("1.6")) {
             javaVersion = CompilerOptions.VERSION_1_6;
         } else if (System.getProperty("java.version").startsWith("1.7")) {
             javaVersion = CompilerOptions.VERSION_1_7;
         }
-        if("1.5".equals(Play.configuration.get("java.source"))) {
+        if ("1.5".equals(Play.configuration.get("java.source"))) {
             javaVersion = CompilerOptions.VERSION_1_5;
-        } else if("1.6".equals(Play.configuration.get("java.source"))) {
+        } else if ("1.6".equals(Play.configuration.get("java.source"))) {
             javaVersion = CompilerOptions.VERSION_1_6;
-        } else if("1.7".equals(Play.configuration.get("java.source"))) {
+        } else if ("1.7".equals(Play.configuration.get("java.source"))) {
             javaVersion = CompilerOptions.VERSION_1_7;
         }
         this.settings.put(CompilerOptions.OPTION_Source, javaVersion);
@@ -235,7 +229,7 @@ public class ApplicationCompiler {
             public void acceptResult(CompilationResult result) {
                 // If error
                 if (result.hasErrors()) {
-                    for (IProblem problem: result.getErrors()) {
+                    for (IProblem problem : result.getErrors()) {
                         String className = new String(problem.getOriginatingFileName()).replace("/", ".");
                         className = className.substring(0, className.length() - 5);
                         String message = problem.getMessage();

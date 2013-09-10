@@ -9,30 +9,23 @@ import play.libs.WS.WSImpl;
 import play.libs.WS.WSRequest;
 import play.mvc.Http.Header;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of the WS interface based on Java URL Fetch API.
- * This is to be used for example in Google App Engine, where the 
+ * This is to be used for example in Google App Engine, where the
  * async http client can't be used.
  */
 public class WSUrlFetch implements WSImpl {
 
-    public WSUrlFetch() {}
+    public WSUrlFetch() {
+    }
 
-    public void stop() {}
+    public void stop() {
+    }
 
     public play.libs.WS.WSRequest newRequest(String url, String encoding) {
         return new WSUrlfetchRequest(url, encoding);
@@ -51,13 +44,13 @@ public class WSUrlFetch implements WSImpl {
                 if (!("PUT".equals(method) || "POST".equals(method))) {
                     // must add params to queryString/url
                     StringBuilder sb = new StringBuilder(url);
-                    if (url.indexOf("?")>0) {
+                    if (url.indexOf("?") > 0) {
                         sb.append('&');
                     } else {
                         sb.append('?');
                     }
-                    int count=0;
-                    for( Map.Entry<String, Object> e : parameters.entrySet()) {
+                    int count = 0;
+                    for (Map.Entry<String, Object> e : parameters.entrySet()) {
                         count++;
                         String key = e.getKey();
                         Object value = e.getValue();
@@ -65,7 +58,7 @@ public class WSUrlFetch implements WSImpl {
 
                         if (value instanceof Collection<?> || value.getClass().isArray()) {
                             Collection<?> values = value.getClass().isArray() ? Arrays.asList((Object[]) value) : (Collection<?>) value;
-                            for (Object v: values) {
+                            for (Object v : values) {
                                 if (count > 1) {
                                     sb.append('&');
                                 }
@@ -93,7 +86,9 @@ public class WSUrlFetch implements WSImpl {
             return u;
         }
 
-        /** Execute a GET request synchronously. */
+        /**
+         * Execute a GET request synchronously.
+         */
         public HttpResponse get() {
             try {
                 return new HttpUrlfetchResponse(prepare(new URL(getPreparedUrl("GET")), "GET"));
@@ -103,7 +98,9 @@ public class WSUrlFetch implements WSImpl {
             }
         }
 
-        /** Execute a POST request.*/
+        /**
+         * Execute a POST request.
+         */
         public HttpResponse post() {
             try {
                 HttpURLConnection conn = prepare(new URL(getPreparedUrl("POST")), "POST");
@@ -113,7 +110,9 @@ public class WSUrlFetch implements WSImpl {
             }
         }
 
-        /** Execute a PUT request.*/
+        /**
+         * Execute a PUT request.
+         */
         public HttpResponse put() {
             try {
                 return new HttpUrlfetchResponse(prepare(new URL(getPreparedUrl("PUT")), "PUT"));
@@ -122,7 +121,9 @@ public class WSUrlFetch implements WSImpl {
             }
         }
 
-       /** Execute a DELETE request.*/
+        /**
+         * Execute a DELETE request.
+         */
         public HttpResponse delete() {
             try {
                 return new HttpUrlfetchResponse(prepare(new URL(getPreparedUrl("DELETE")), "DELETE"));
@@ -131,7 +132,9 @@ public class WSUrlFetch implements WSImpl {
             }
         }
 
-        /** Execute a OPTIONS request.*/
+        /**
+         * Execute a OPTIONS request.
+         */
         public HttpResponse options() {
             try {
                 return new HttpUrlfetchResponse(prepare(new URL(getPreparedUrl("OPTIONS")), "OPTIONS"));
@@ -140,7 +143,9 @@ public class WSUrlFetch implements WSImpl {
             }
         }
 
-        /** Execute a HEAD request.*/
+        /**
+         * Execute a HEAD request.
+         */
         public HttpResponse head() {
             try {
                 return new HttpUrlfetchResponse(prepare(new URL(getPreparedUrl("HEAD")), "HEAD"));
@@ -149,7 +154,9 @@ public class WSUrlFetch implements WSImpl {
             }
         }
 
-        /** Execute a TRACE request.*/
+        /**
+         * Execute a TRACE request.
+         */
         public HttpResponse trace() {
             try {
                 return new HttpUrlfetchResponse(prepare(new URL(getPreparedUrl("TRACE")), "TRACE"));
@@ -162,8 +169,11 @@ public class WSUrlFetch implements WSImpl {
             if (this.username != null && this.password != null && this.scheme != null) {
                 String authString = null;
                 switch (this.scheme) {
-                case BASIC: authString = basicAuthHeader(); break;
-                default: throw new RuntimeException("Scheme " + this.scheme + " not supported by the UrlFetch WS backend.");
+                    case BASIC:
+                        authString = basicAuthHeader();
+                        break;
+                    default:
+                        throw new RuntimeException("Scheme " + this.scheme + " not supported by the UrlFetch WS backend.");
                 }
                 this.headers.put("Authorization", authString);
             }
@@ -173,7 +183,7 @@ public class WSUrlFetch implements WSImpl {
                 connection.setDoInput(true);
                 connection.setInstanceFollowRedirects(this.followRedirects);
                 connection.setReadTimeout(this.timeout * 1000);
-                for (String key: this.headers.keySet()) {
+                for (String key : this.headers.keySet()) {
                     connection.setRequestProperty(key, headers.get(key));
                 }
                 checkFileBody(connection);
@@ -183,7 +193,7 @@ public class WSUrlFetch implements WSImpl {
                     consumer.sign(connection);
                 }
                 return connection;
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -214,7 +224,7 @@ public class WSUrlFetch implements WSImpl {
                 return;
             }*/
             if (this.parameters != null && !this.parameters.isEmpty()) {
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset="+encoding);
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=" + encoding);
                 connection.setDoOutput(true);
                 OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
                 writer.write(createQueryString());
@@ -227,23 +237,23 @@ public class WSUrlFetch implements WSImpl {
                 connection.setDoOutput(true);
 
                 OutputStream out = connection.getOutputStream();
-                if(this.body instanceof InputStream) {
-                    InputStream bodyStream = (InputStream)this.body;
+                if (this.body instanceof InputStream) {
+                    InputStream bodyStream = (InputStream) this.body;
                     byte[] buffer = new byte[1024];
                     int bytesRead;
-                    while( (bytesRead = bodyStream.read(buffer, 0, buffer.length)) > 0) {
+                    while ((bytesRead = bodyStream.read(buffer, 0, buffer.length)) > 0) {
                         out.write(buffer, 0, bytesRead);
                     }
                 } else {
                     try {
-                        byte[] bodyBytes = this.body.toString().getBytes( this.encoding );
-                        out.write( bodyBytes );
-                    } catch ( UnsupportedEncodingException e) {
+                        byte[] bodyBytes = this.body.toString().getBytes(this.encoding);
+                        out.write(bodyBytes);
+                    } catch (UnsupportedEncodingException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                if(this.mimeType != null) {
-                    connection.setRequestProperty("Content-Type", this.mimeType+"; charset="+encoding);
+                if (this.mimeType != null) {
+                    connection.setRequestProperty("Content-Type", this.mimeType + "; charset=" + encoding);
                 }
             }
         }
@@ -262,6 +272,7 @@ public class WSUrlFetch implements WSImpl {
 
         /**
          * you shouldnt have to create an HttpResponse yourself
+         *
          * @param method
          */
         public HttpUrlfetchResponse(HttpURLConnection connection) {
@@ -285,6 +296,7 @@ public class WSUrlFetch implements WSImpl {
 
         /**
          * the HTTP status code
+         *
          * @return the status code of the http response
          */
         @Override
@@ -300,7 +312,7 @@ public class WSUrlFetch implements WSImpl {
         @Override
         public List<Header> getHeaders() {
             List<Header> result = new ArrayList<Header>();
-            for (String key: headersMap.keySet()) {
+            for (String key : headersMap.keySet()) {
                 result.add(new Header(key, headersMap.get(key)));
             }
             return result;
@@ -308,6 +320,7 @@ public class WSUrlFetch implements WSImpl {
 
         /**
          * get the response body as a string
+         *
          * @return the body of the http response
          */
         @Override
@@ -317,12 +330,13 @@ public class WSUrlFetch implements WSImpl {
 
         /**
          * get the response as a stream
+         *
          * @return an inputstream
          */
         @Override
         public InputStream getStream() {
             try {
-                return new ByteArrayInputStream(body.getBytes( getEncoding() ));
+                return new ByteArrayInputStream(body.getBytes(getEncoding()));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }

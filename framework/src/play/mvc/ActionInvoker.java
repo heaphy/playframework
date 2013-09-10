@@ -1,18 +1,15 @@
 package play.mvc;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+import org.apache.commons.javaflow.Continuation;
+import org.apache.commons.javaflow.bytecode.StackRecorder;
 import org.apache.commons.lang.StringUtils;
+import play.Invoker.Suspend;
 import play.Logger;
 import play.Play;
 import play.cache.CacheFor;
+import play.classloading.enhancers.ControllersEnhancer;
 import play.classloading.enhancers.ControllersEnhancer.ControllerInstrumentation;
 import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.data.binding.Binder;
@@ -25,23 +22,23 @@ import play.exceptions.ActionNotFoundException;
 import play.exceptions.JavaExecutionException;
 import play.exceptions.PlayException;
 import play.exceptions.UnexpectedException;
-import play.i18n.Lang;
 import play.mvc.Http.Request;
 import play.mvc.Router.Route;
 import play.mvc.results.NoResult;
+import play.mvc.results.NotFound;
 import play.mvc.results.Result;
 import play.utils.Java;
 import play.utils.Utils;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
 import java.util.concurrent.Future;
-import org.apache.commons.javaflow.Continuation;
-import org.apache.commons.javaflow.bytecode.StackRecorder;
-import play.Invoker.Suspend;
-import play.classloading.enhancers.ControllersEnhancer;
-import play.mvc.results.NotFound;
 
 /**
  * Invoke an action after an HTTP request.
@@ -369,6 +366,7 @@ public class ActionInvoker {
     /**
      * Checks and calla all methods in controller annotated with @Finally.
      * The caughtException-value is sent as argument to @Finally-method if method has one argument which is Throwable
+     *
      * @param request
      * @param caughtException If @Finally-methods are called after an error, this variable holds the caught error
      * @throws PlayException
@@ -498,12 +496,13 @@ public class ActionInvoker {
     }
 
     static Object invoke(Method method, Object instance, Object[] realArgs) throws Exception {
-        if(isActionMethod(method)) {
+        if (isActionMethod(method)) {
             return invokeWithContinuation(method, instance, realArgs);
         } else {
             return method.invoke(instance, realArgs);
         }
     }
+
     static final String C = "__continuation";
     static final String A = "__callback";
     static final String F = "__future";
@@ -618,7 +617,7 @@ public class ActionInvoker {
 
         // Check if we have already performed the bind operation
         Object[] rArgs = CachedBoundActionMethodArgs.current().retrieveActionMethodArgs(method);
-        if ( rArgs != null) {
+        if (rArgs != null) {
             // We have already performed the binding-operation for this method
             // in this request.
             return rArgs;
@@ -628,7 +627,7 @@ public class ActionInvoker {
         for (int i = 0; i < method.getParameterTypes().length; i++) {
 
             Class<?> type = method.getParameterTypes()[i];
-            Map<String, String[]> params = new HashMap<String, String[]> ();
+            Map<String, String[]> params = new HashMap<String, String[]>();
 
             // In case of simple params, we don't want to parse the body.
             if (type.equals(String.class) || Number.class.isAssignableFrom(type) || type.isPrimitive()) {
@@ -640,12 +639,12 @@ public class ActionInvoker {
 
             RootParamNode root = ParamNode.convert(params);
             rArgs[i] = Binder.bind(
-                        root,
-                        paramsNames[i],
-                        method.getParameterTypes()[i],
-                        method.getGenericParameterTypes()[i],
-                        method.getParameterAnnotations()[i],
-                        new Binder.MethodAndParamInfo(o, method, i + 1));
+                    root,
+                    paramsNames[i],
+                    method.getParameterTypes()[i],
+                    method.getGenericParameterTypes()[i],
+                    method.getParameterAnnotations()[i],
+                    new Binder.MethodAndParamInfo(o, method, i + 1));
         }
 
         CachedBoundActionMethodArgs.current().storeActionMethodArgs(method, rArgs);

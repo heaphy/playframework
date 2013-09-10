@@ -2,11 +2,7 @@ package play.data.binding;
 
 import play.utils.Utils;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ParamNode {
     private final String name;
@@ -40,7 +36,7 @@ public class ParamNode {
             return null;
         }
 
-        if (values.length>1 && String.class.equals(type)) {
+        if (values.length > 1 && String.class.equals(type)) {
             // special handling for string - when multiple values, concatenate them with comma..
             return Utils.join(values, ", ");
         } else {
@@ -48,16 +44,16 @@ public class ParamNode {
         }
     }
 
-    public void addChild( ParamNode child) {
+    public void addChild(ParamNode child) {
         _children.put(child.name, child);
     }
 
     public ParamNode getChild(String name) {
-        return getChild( name, false);
+        return getChild(name, false);
     }
 
     public ParamNode getChild(String name, boolean returnEmptyChildIfNotFound) {
-        ParamNode child = getChild( name.split(keyPartDelimiterRegexpString));
+        ParamNode child = getChild(name.split(keyPartDelimiterRegexpString));
         if (child == null && returnEmptyChildIfNotFound) {
             child = new ParamNode(name);
         }
@@ -80,29 +76,29 @@ public class ParamNode {
      * This is a "hack" related to #1195 which makes it possible to reuse the RootParamsNode-structure
      * if you want to perform the bind-operation multiple times.
      *
-     * @param name the name of the child-node in this paramNode which should be removed.
+     * @param name             the name of the child-node in this paramNode which should be removed.
      * @param removedNodesList a list where info about what is removed where is stored.
      * @return true if anything was removed.
      */
     public boolean removeChild(String name, List<RemovedNode> removedNodesList) {
         ParamNode removedNode = _children.remove(name);
-        if ( removedNode != null) {
-            removedNodesList.add( new RemovedNode(this, removedNode));
+        if (removedNode != null) {
+            removedNodesList.add(new RemovedNode(this, removedNode));
             return true;
         } else {
             return false;
         }
     }
 
-    public static void restoreRemovedChildren( List<RemovedNode> removedNodesList ) {
-        for ( RemovedNode rn : removedNodesList) {
-            rn.removedFrom._children.put( rn.removedNode.name, rn.removedNode);
+    public static void restoreRemovedChildren(List<RemovedNode> removedNodesList) {
+        for (RemovedNode rn : removedNodesList) {
+            rn.removedFrom._children.put(rn.removedNode.name, rn.removedNode);
         }
     }
 
     private ParamNode getChild(String[] nestedNames) {
         ParamNode currentChildNode = this;
-        for (int i=0; i<nestedNames.length; i++) {
+        for (int i = 0; i < nestedNames.length; i++) {
             currentChildNode = currentChildNode._children.get(nestedNames[i]);
             if (currentChildNode == null) {
                 return null;
@@ -125,14 +121,14 @@ public class ParamNode {
     }
 
     public String getOriginalKey() {
-        if (originalKey==null) {
+        if (originalKey == null) {
             return name;
         }
         return originalKey;
     }
 
     public static RootParamNode convert(Map<String, String[]> params) {
-        RootParamNode root = new RootParamNode( params);
+        RootParamNode root = new RootParamNode(params);
 
         for (Map.Entry<String, String[]> e : params.entrySet()) {
             String key = e.getKey();
@@ -143,9 +139,9 @@ public class ParamNode {
 
             ParamNode currentParent = root;
 
-            for ( String name : key.split(keyPartDelimiterRegexpString)) {
-                ParamNode paramNode = currentParent.getChild( name );
-                if (paramNode ==null) {
+            for (String name : key.split(keyPartDelimiterRegexpString)) {
+                ParamNode paramNode = currentParent.getChild(name);
+                if (paramNode == null) {
                     // first time we see this node - create it and add it to parent
                     paramNode = new ParamNode(name);
                     currentParent.addChild(paramNode);
@@ -154,7 +150,7 @@ public class ParamNode {
             }
 
             // currentParent is now the last node where we should place the values
-            currentParent.setValue( values, key);
+            currentParent.setValue(values, key);
 
         }
         return root;

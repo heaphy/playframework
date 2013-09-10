@@ -1,8 +1,9 @@
 package play.exceptions;
 
+import org.hibernate.exception.GenericJDBCException;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.exception.GenericJDBCException;
 
 /**
  * JPA exception
@@ -24,8 +25,8 @@ public class JPAException extends PlayException implements SourceAttachment {
 
     @Override
     public String getErrorDescription() {
-        if(getCause() != null && getCause() instanceof GenericJDBCException) {
-            String SQL = ((GenericJDBCException)getCause()).getSQL();
+        if (getCause() != null && getCause() instanceof GenericJDBCException) {
+            String SQL = ((GenericJDBCException) getCause()).getSQL();
             return String.format("A JPA error occurred (%s): <strong>%s</strong>. This is likely because the batch has broken some referential integrity. Check your cascade delete, in case of ...", getMessage(), getCause() == null ? "" : getCause().getMessage(), SQL);
         }
         return String.format("A JPA error occurred (%s): <strong>%s</strong>", getMessage(), getCause() == null ? "" : getCause().getMessage());
@@ -34,7 +35,7 @@ public class JPAException extends PlayException implements SourceAttachment {
     @Override
     public boolean isSourceAvailable() {
         return getCause() != null && getCause() instanceof GenericJDBCException;
-    }   
+    }
 
     @Override
     public Integer getLineNumber() {
@@ -43,8 +44,8 @@ public class JPAException extends PlayException implements SourceAttachment {
 
     public List<String> getSource() {
         List<String> sql = new ArrayList<String>();
-        if(getCause() != null && getCause() instanceof GenericJDBCException) {
-            sql.add(((GenericJDBCException)getCause()).getSQL());
+        if (getCause() != null && getCause() instanceof GenericJDBCException) {
+            sql.add(((GenericJDBCException) getCause()).getSQL());
         }
         return sql;
     }
@@ -52,8 +53,7 @@ public class JPAException extends PlayException implements SourceAttachment {
     @Override
     public String getSourceFile() {
         return "SQL Statement";
-    }   
-    
-    
-    
+    }
+
+
 }

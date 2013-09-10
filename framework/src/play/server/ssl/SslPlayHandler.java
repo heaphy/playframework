@@ -11,7 +11,7 @@ import play.server.Server;
 import javax.net.ssl.SSLException;
 import java.net.InetSocketAddress;
 
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.*;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.LOCATION;
 
 public class SslPlayHandler extends PlayHandler {
 

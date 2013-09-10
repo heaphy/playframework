@@ -1,5 +1,14 @@
 package play.classloading;
 
+import play.Logger;
+import play.Play;
+import play.cache.Cache;
+import play.classloading.ApplicationClasses.ApplicationClass;
+import play.classloading.hash.ClassStateHashCreator;
+import play.exceptions.UnexpectedException;
+import play.libs.IO;
+import play.vfs.VirtualFile;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -13,28 +22,10 @@ import java.security.CodeSource;
 import java.security.Permissions;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import play.Logger;
-import play.Play;
-import play.classloading.hash.ClassStateHashCreator;
-import play.vfs.VirtualFile;
-import play.cache.Cache;
-import play.classloading.ApplicationClasses.ApplicationClass;
-import play.exceptions.UnexpectedException;
-import play.libs.IO;
+import java.util.*;
 
 /**
- * The application classLoader. 
+ * The application classLoader.
  * Load the classes from the application Java sources files.
  */
 public class ApplicationClassloader extends ClassLoader {
@@ -97,7 +88,7 @@ public class ApplicationClassloader extends ClassLoader {
     public Class<?> loadApplicationClass(String name) {
 
         Class maybeAlreadyLoaded = findLoadedClass(name);
-        if(maybeAlreadyLoaded != null) {
+        if (maybeAlreadyLoaded != null) {
             return maybeAlreadyLoaded;
         }
 
@@ -374,6 +365,7 @@ public class ApplicationClassloader extends ClassLoader {
             throw new RuntimeException("Path has changed");
         }
     }
+
     /**
      * Used to track change of the application sources path
      */
@@ -385,6 +377,7 @@ public class ApplicationClassloader extends ClassLoader {
 
     /**
      * Try to load all .java files found.
+     *
      * @return The list of well defined Class
      */
     public List<Class> getAllClasses() {
@@ -406,7 +399,7 @@ public class ApplicationClassloader extends ClassLoader {
 
             } else {
 
-                if(!Play.pluginCollection.compileSources()) {
+                if (!Play.pluginCollection.compileSources()) {
 
                     List<ApplicationClass> all = new ArrayList<ApplicationClass>();
 
@@ -415,7 +408,7 @@ public class ApplicationClassloader extends ClassLoader {
                     }
                     List<String> classNames = new ArrayList<String>();
                     for (int i = 0; i < all.size(); i++) {
-                            ApplicationClass applicationClass = all.get(i);
+                        ApplicationClass applicationClass = all.get(i);
                         if (applicationClass != null && !applicationClass.compiled && applicationClass.isClass()) {
                             classNames.add(all.get(i).name);
                         }
@@ -442,10 +435,12 @@ public class ApplicationClassloader extends ClassLoader {
         }
         return allClasses;
     }
+
     List<Class> allClasses = null;
 
     /**
      * Retrieve all application classes assignable to this class.
+     *
      * @param clazz The superclass, or the interface.
      * @return A list of class
      */
@@ -460,6 +455,7 @@ public class ApplicationClassloader extends ClassLoader {
 
     /**
      * Find a class in a case insensitive way
+     *
      * @param name The class name.
      * @return a class
      */
@@ -478,6 +474,7 @@ public class ApplicationClassloader extends ClassLoader {
 
     /**
      * Retrieve all application classes with a specific annotation.
+     *
      * @param clazz The annotation class.
      * @return A list of class
      */

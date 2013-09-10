@@ -27,7 +27,7 @@ public class WebSocketInvoker {
 
             ActionInvoker.invoke(request, null);
 
-        }catch (PlayException e) {
+        } catch (PlayException e) {
             throw e;
         } catch (Exception e) {
             throw new UnexpectedException(e);

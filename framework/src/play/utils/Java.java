@@ -1,19 +1,5 @@
 package play.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.FutureTask;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.bytecode.SourceFileAttribute;
@@ -29,6 +15,17 @@ import play.mvc.Before;
 import play.mvc.Finally;
 import play.mvc.With;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.FutureTask;
+
 /**
  * Java utils
  */
@@ -39,10 +36,10 @@ public class Java {
     protected static Object _javaWithCachingLock = new Object();
 
     protected static JavaWithCaching getJavaWithCaching() {
-        synchronized( _javaWithCachingLock ) {
+        synchronized (_javaWithCachingLock) {
             // has the state of the ApplicationClassloader changed?
             ApplicationClassloaderState currentApplicationClasloaderState = Play.classloader.currentState;
-            if( !currentApplicationClasloaderState.equals( _lastKnownApplicationClassloaderState )) {
+            if (!currentApplicationClasloaderState.equals(_lastKnownApplicationClassloaderState)) {
                 // it has changed.
                 // we must drop our current _javaWithCaching and create a new one...
                 // and start the caching over again.
@@ -89,7 +86,8 @@ public class Java {
 
     /**
      * Find the first public static method of a controller class
-     * @param name The method name
+     *
+     * @param name  The method name
      * @param clazz The class
      * @return The method or null
      */
@@ -111,7 +109,8 @@ public class Java {
 
     /**
      * Invoke a static method
-     * @param clazz The class
+     *
+     * @param clazz  The class
      * @param method The method name
      * @return The result
      * @throws java.lang.Exception
@@ -126,9 +125,10 @@ public class Java {
 
     /**
      * Invoke a static method with args
-     * @param clazz The class
+     *
+     * @param clazz  The class
      * @param method The method name
-     * @param args Arguments
+     * @param args   Arguments
      * @return The result
      * @throws java.lang.Exception
      */
@@ -171,15 +171,12 @@ public class Java {
 
         Class invokedClass = null;
         List<Class> assignableClasses = Play.classloader.getAssignableClasses(clazz);
-        if(assignableClasses.size() == 0)
-        {
+        if (assignableClasses.size() == 0) {
             invokedClass = clazz;
-        }
-        else
-        {
+        } else {
             invokedClass = assignableClasses.get(0);
         }
-        
+
         return Java.invokeStaticOrParent(invokedClass, method, args);
     }
 
@@ -267,7 +264,8 @@ public class Java {
 
     /**
      * Find all annotated method from a class
-     * @param clazz The class
+     *
+     * @param clazz          The class
      * @param annotationType The annotation class
      * @return A list of method object
      */
@@ -278,7 +276,8 @@ public class Java {
 
     /**
      * Find all annotated method from a class
-     * @param classes The classes
+     *
+     * @param classes        The classes
      * @param annotationType The annotation class
      * @return A list of method object
      */
@@ -300,7 +299,10 @@ public class Java {
             findAllFields(sClazz, found);
         }
     }
-    /** cache */
+
+    /**
+     * cache
+     */
     private static Map<Field, FieldWrapper> wrappers = new HashMap<Field, FieldWrapper>();
 
     public static FieldWrapper getFieldWrapper(Field field) {
@@ -421,10 +423,9 @@ public class Java {
 /**
  * This is an internal class uses only by the Java-class.
  * It contains functionality with caching..
- *
+ * <p/>
  * The idea is that the Java-objects creates a new instance of JavaWithCaching,
  * each time something new is compiled..
- *
  */
 class JavaWithCaching {
 
@@ -470,38 +471,39 @@ class JavaWithCaching {
 
     /**
      * Find all annotated method from a class
-     * @param clazz The class
+     *
+     * @param clazz          The class
      * @param annotationType The annotation class
      * @return A list of method object
      */
     public List<Method> findAllAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotationType) {
 
-        if( clazz == null ) {
+        if (clazz == null) {
             return new ArrayList<Method>(0);
         }
 
-        synchronized( classAndAnnotationsLock ) {
+        synchronized (classAndAnnotationsLock) {
 
             // first look in cache
 
             ClassAndAnnotation key = new ClassAndAnnotation(clazz, annotationType);
 
-            List<Method> methods = classAndAnnotation2Methods.get( key );
-            if( methods != null ) {
+            List<Method> methods = classAndAnnotation2Methods.get(key);
+            if (methods != null) {
                 // cache hit
                 return methods;
             }
             // have to resolve it.
             methods = new ArrayList<Method>();
             // get list of all annotated methods on this class..
-            for( Method method : findAllAnnotatedMethods( clazz)) {
+            for (Method method : findAllAnnotatedMethods(clazz)) {
                 if (method.isAnnotationPresent(annotationType)) {
                     methods.add(method);
                 }
             }
 
             // store it in cache
-            classAndAnnotation2Methods.put( key, methods);
+            classAndAnnotation2Methods.put(key, methods);
 
             return methods;
         }
@@ -509,14 +511,15 @@ class JavaWithCaching {
 
     /**
      * Find all annotated method from a class
+     *
      * @param clazz The class
      * @return A list of method object
      */
     public List<Method> findAllAnnotatedMethods(Class<?> clazz) {
-        synchronized( classAndAnnotationsLock ) {
+        synchronized (classAndAnnotationsLock) {
             // first check the cache..
             List<Method> methods = class2AllMethodsWithAnnotations.get(clazz);
-            if( methods != null ) {
+            if (methods != null) {
                 // cache hit
                 return methods;
             }
@@ -531,7 +534,7 @@ class JavaWithCaching {
                 }
                 if (clazz.isAnnotationPresent(With.class)) {
                     for (Class withClass : clazz.getAnnotation(With.class).value()) {
-                        methods.addAll(findAllAnnotatedMethods(withClass ));
+                        methods.addAll(findAllAnnotatedMethods(withClass));
                     }
                 }
                 clazz = clazz.getSuperclass();

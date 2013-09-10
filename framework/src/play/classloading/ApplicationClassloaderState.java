@@ -5,10 +5,10 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Each unique instance of this class represent a State of the ApplicationClassloader.
  * When some classes is reloaded, them the ApplicationClassloader get a new state.
- *
+ * <p/>
  * This makes it easy for other parts of Play to cache stuff based on the
  * the current State of the ApplicationClassloader..
- *
+ * <p/>
  * They can store the reference to the current state, then later, before reading from cache,
  * they could check if the state of the ApplicationClassloader has changed..
  */

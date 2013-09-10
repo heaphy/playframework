@@ -1,15 +1,5 @@
 package play.test;
 
-import java.io.File;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.junit.Assert;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
@@ -18,6 +8,12 @@ import org.junit.runner.notification.RunListener;
 import play.Logger;
 import play.Play;
 import play.vfs.VirtualFile;
+
+import java.io.File;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Run application tests
@@ -36,7 +32,7 @@ public class TestEngine {
 
     public static List<Class> allUnitTests() {
         List<Class> classes = Play.classloader.getAssignableClasses(Assert.class);
-        for (ListIterator<Class> it = classes.listIterator(); it.hasNext();) {
+        for (ListIterator<Class> it = classes.listIterator(); it.hasNext(); ) {
             Class c = it.next();
             if (Modifier.isAbstract(c.getModifiers())) {
                 it.remove();
@@ -52,7 +48,7 @@ public class TestEngine {
 
     public static List<Class> allFunctionalTests() {
         List<Class> classes = Play.classloader.getAssignableClasses(FunctionalTest.class);
-        for (ListIterator<Class> it = classes.listIterator(); it.hasNext();) {
+        for (ListIterator<Class> it = classes.listIterator(); it.hasNext(); ) {
             if (Modifier.isAbstract(it.next().getModifiers())) {
                 it.remove();
             }
@@ -186,13 +182,13 @@ public class TestEngine {
             time = result.time + time;
             this.results.add(result);
             if (result.passed) {
-              success++;
+                success++;
             } else {
-              if (result.error.startsWith("Failure")) {
-                failures++;
-              } else {
-                errors++;
-              }
+                if (result.error.startsWith("Failure")) {
+                    failures++;
+                } else {
+                    errors++;
+                }
             }
         }
     }

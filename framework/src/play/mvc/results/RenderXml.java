@@ -1,13 +1,11 @@
 package play.mvc.results;
 
+import com.thoughtworks.xstream.XStream;
 import org.w3c.dom.Document;
-
 import play.exceptions.UnexpectedException;
 import play.libs.XML;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
-
-import com.thoughtworks.xstream.XStream;
 
 /**
  * 200 OK with a text/xml
@@ -36,7 +34,7 @@ public class RenderXml extends Result {
         try {
             setContentTypeIfNotSet(response, "text/xml");
             response.out.write(xml.getBytes(getEncoding()));
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new UnexpectedException(e);
         }
     }

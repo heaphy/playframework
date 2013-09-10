@@ -1,11 +1,7 @@
 package play.db.jpa;
 
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation to be used on methods telling JPA
@@ -13,7 +9,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@Target(value={ElementType.METHOD,ElementType.TYPE})
+@Target(value = {ElementType.METHOD, ElementType.TYPE})
 public @interface NoTransaction {
 
 }

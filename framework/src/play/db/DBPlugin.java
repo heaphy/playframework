@@ -2,23 +2,6 @@ package play.db;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.ConnectionCustomizer;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import java.sql.SQLFeatureNotSupportedException;
-
 import jregex.Matcher;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -28,6 +11,17 @@ import play.exceptions.DatabaseException;
 import play.mvc.Http;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * The DB plugin
@@ -111,13 +105,13 @@ public class DBPlugin extends PlayPlugin {
                     ds.setMaxIdleTimeExcessConnections(Integer.parseInt(p.getProperty("db.pool.maxIdleTimeExcessConnections", "0")));
                     ds.setIdleConnectionTestPeriod(10);
                     ds.setTestConnectionOnCheckin(true);
-                    
+
                     // This check is not required, but here to make it clear that nothing changes for people
                     // that don't set this configuration property. It may be safely removed.
-                    if(p.getProperty("db.isolation") != null) {
+                    if (p.getProperty("db.isolation") != null) {
                         ds.setConnectionCustomizerClassName(play.db.DBPlugin.PlayConnectionCustomizer.class.getName());
                     }
-                    
+
                     DB.datasource = ds;
                     url = ds.getJdbcUrl();
                     Connection c = null;
@@ -230,7 +224,7 @@ public class DBPlugin extends PlayPlugin {
                 p.put("db.pass", password);
             }
         }
-        
+
         m = new jregex.Pattern("^postgres:(//)?(({user}[a-zA-Z0-9_]+)(:({pwd}[^@]+))?@)?(({host}[^/]+)/)?({name}[^\\s]+)$").matcher(p.getProperty("db", ""));
         if (m.matches()) {
             String user = m.group("user");
@@ -247,7 +241,7 @@ public class DBPlugin extends PlayPlugin {
             }
         }
 
-        if(p.getProperty("db.url") != null && p.getProperty("db.url").startsWith("jdbc:h2:mem:")) {
+        if (p.getProperty("db.url") != null && p.getProperty("db.url").startsWith("jdbc:h2:mem:")) {
             p.put("db.driver", "org.h2.Driver");
             p.put("db.user", "sa");
             p.put("db.pass", "");
@@ -256,7 +250,7 @@ public class DBPlugin extends PlayPlugin {
         if ((p.getProperty("db.driver") == null) || (p.getProperty("db.url") == null)) {
             return false;
         }
-        
+
         if (DB.datasource == null) {
             return true;
         } else {
@@ -347,9 +341,14 @@ public class DBPlugin extends PlayPlugin {
             }
         }
 
-        public void onDestroy(Connection c, String parentDataSourceIdentityToken) {}
-        public void onCheckOut(Connection c, String parentDataSourceIdentityToken) {}
-        public void onCheckIn(Connection c, String parentDataSourceIdentityToken) {}
+        public void onDestroy(Connection c, String parentDataSourceIdentityToken) {
+        }
+
+        public void onCheckOut(Connection c, String parentDataSourceIdentityToken) {
+        }
+
+        public void onCheckIn(Connection c, String parentDataSourceIdentityToken) {
+        }
 
         /**
          * Get the isolation level from either the isolationLevels map, or by

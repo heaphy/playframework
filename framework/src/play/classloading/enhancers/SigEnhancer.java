@@ -61,7 +61,7 @@ public class SigEnhancer extends Enhancer {
 
         if (ctClass.getClassInitializer() != null) {
             sigChecksum.append("Static Code->");
-            for (CodeIterator i = ctClass.getClassInitializer().getMethodInfo().getCodeAttribute().iterator(); i.hasNext();) {
+            for (CodeIterator i = ctClass.getClassInitializer().getMethodInfo().getCodeAttribute().iterator(); i.hasNext(); ) {
                 int index = i.next();
                 int op = i.byteAt(index);
                 sigChecksum.append(op);
@@ -75,7 +75,7 @@ public class SigEnhancer extends Enhancer {
 
         if (ctClass.getName().endsWith("$")) {
             sigChecksum.append("Singletons->");
-            for (CodeIterator i = ctClass.getDeclaredConstructors()[0].getMethodInfo().getCodeAttribute().iterator(); i.hasNext();) {
+            for (CodeIterator i = ctClass.getDeclaredConstructors()[0].getMethodInfo().getCodeAttribute().iterator(); i.hasNext(); ) {
                 int index = i.next();
                 int op = i.byteAt(index);
                 sigChecksum.append(op);

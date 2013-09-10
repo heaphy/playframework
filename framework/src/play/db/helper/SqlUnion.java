@@ -20,23 +20,51 @@ public class SqlUnion extends SqlQuery {
         params.addAll(src.getParams());
     }
 
-    @Override public SqlUnion param(Object obj) { super.param(obj); return this; }
-    @Override public SqlUnion params(Object ... objs) { super.params(objs); return this; }
+    @Override
+    public SqlUnion param(Object obj) {
+        super.param(obj);
+        return this;
+    }
 
-    public SqlUnion orderBy(String ... expr) { orderBy.add(expr); return this; }
-    public SqlUnion limit(long lines) { limit.append(lines); return this; }
-    public SqlUnion limit(long offset, long lines) { limit.append(offset +", "+ lines); return this; }
+    @Override
+    public SqlUnion params(Object... objs) {
+        super.params(objs);
+        return this;
+    }
 
-    private void unionSep(String separator, SqlSelect ... expr) {
+    public SqlUnion orderBy(String... expr) {
+        orderBy.add(expr);
+        return this;
+    }
+
+    public SqlUnion limit(long lines) {
+        limit.append(lines);
+        return this;
+    }
+
+    public SqlUnion limit(long offset, long lines) {
+        limit.append(offset + ", " + lines);
+        return this;
+    }
+
+    private void unionSep(String separator, SqlSelect... expr) {
         for (SqlSelect query : expr) {
             String sql = query.toString();
-            if (sql.length()>0) sql = "(" + sql + ")";
+            if (sql.length() > 0) sql = "(" + sql + ")";
             union.separator(separator).append(sql);
             params.addAll(query.getParams());
         }
     }
-    public SqlUnion union(SqlSelect ... expr) { unionSep(" UNION ", expr); return this; }
-    public SqlUnion unionAll(SqlSelect ... expr) { unionSep(" UNION ALL ", expr); return this; }
+
+    public SqlUnion union(SqlSelect... expr) {
+        unionSep(" UNION ", expr);
+        return this;
+    }
+
+    public SqlUnion unionAll(SqlSelect... expr) {
+        unionSep(" UNION ALL ", expr);
+        return this;
+    }
 
     @Override
     public String toString() {

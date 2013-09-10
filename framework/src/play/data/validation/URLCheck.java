@@ -1,9 +1,10 @@
 package play.data.validation;
 
-import java.util.regex.Pattern;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
+
+import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 public class URLCheck extends AbstractAnnotationCheck<URL> {

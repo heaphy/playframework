@@ -1,20 +1,17 @@
 package play.libs;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.gson.JsonObject;
+import play.libs.WS.HttpResponse;
 import play.mvc.Http.Request;
 import play.mvc.Scope.Params;
 import play.mvc.results.Redirect;
 
-import play.libs.WS.HttpResponse;
-
-import com.google.gson.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Library to access ressources protected by OAuth 2.0. For OAuth 1.0a, see play.libs.OAuth.
  * See the facebook-oauth2 example for usage.
- *
  */
 public class OAuth2 {
 
@@ -24,9 +21,9 @@ public class OAuth2 {
     public String secret;
 
     public OAuth2(String authorizationURL,
-            String accessTokenURL,
-            String clientid,
-            String secret) {
+                  String accessTokenURL,
+                  String clientid,
+                  String secret) {
         this.accessTokenURL = accessTokenURL;
         this.authorizationURL = authorizationURL;
         this.clientid = clientid;
@@ -87,11 +84,13 @@ public class OAuth2 {
         public final String accessToken;
         public final Error error;
         public final WS.HttpResponse httpResponse;
+
         private Response(String accessToken, Error error, WS.HttpResponse response) {
             this.accessToken = accessToken;
             this.error = error;
             this.httpResponse = response;
         }
+
         public Response(WS.HttpResponse response) {
             this.httpResponse = response;
             Map<String, String> querystring = response.getQueryString();
@@ -103,6 +102,7 @@ public class OAuth2 {
                 this.error = Error.oauth2(response);
             }
         }
+
         public static Response error(Error error, WS.HttpResponse response) {
             return new Response(null, error, response);
         }
@@ -112,19 +112,23 @@ public class OAuth2 {
         public final Type type;
         public final String error;
         public final String description;
+
         public enum Type {
             COMMUNICATION,
             OAUTH,
             UNKNOWN
         }
+
         private Error(Type type, String error, String description) {
             this.type = type;
             this.error = error;
             this.description = description;
         }
+
         static Error communication() {
             return new Error(Type.COMMUNICATION, null, null);
         }
+
         static Error oauth2(WS.HttpResponse response) {
             if (response.getQueryString().containsKey("error")) {
                 Map<String, String> qs = response.getQueryString();
@@ -140,7 +144,9 @@ public class OAuth2 {
                 return new Error(Type.UNKNOWN, null, null);
             }
         }
-        @Override public String toString() {
+
+        @Override
+        public String toString() {
             return "OAuth2 Error: " + type + " - " + error + " (" + description + ")";
         }
     }

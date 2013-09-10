@@ -1,10 +1,11 @@
 package play.data.validation;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class MaxCheck extends AbstractAnnotationCheck<Max> {
@@ -47,5 +48,5 @@ public class MaxCheck extends AbstractAnnotationCheck<Max> {
         messageVariables.put("max", Double.toString(max));
         return messageVariables;
     }
-   
+
 }

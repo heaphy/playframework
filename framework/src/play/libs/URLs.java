@@ -1,7 +1,8 @@
 package play.libs;
 
-import java.net.URLEncoder;
 import play.exceptions.UnexpectedException;
+
+import java.net.URLEncoder;
 
 public class URLs {
 

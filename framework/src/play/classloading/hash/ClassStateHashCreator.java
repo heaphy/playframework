@@ -31,7 +31,7 @@ public class ClassStateHashCreator {
         /**
          * @return true if file has changed on disk
          */
-        public boolean fileNotChanges( ) {
+        public boolean fileNotChanges() {
             return size == file.length() && lastModified == file.lastModified();
         }
 
@@ -55,7 +55,7 @@ public class ClassStateHashCreator {
     private void scan(StringBuffer buf, VirtualFile current) {
         if (!current.isDirectory()) {
             if (current.getName().endsWith(".java")) {
-                buf.append( getClassDefsForFile(current));
+                buf.append(getClassDefsForFile(current));
             }
         } else if (!current.getName().startsWith(".")) {
             // TODO: we could later optimizie it further if we check if the entire folder is unchanged
@@ -65,13 +65,13 @@ public class ClassStateHashCreator {
         }
     }
 
-    private String getClassDefsForFile( VirtualFile current ) {
+    private String getClassDefsForFile(VirtualFile current) {
 
         File realFile = current.getRealFile();
         // first we look in cache
 
-        FileWithClassDefs fileWithClassDefs = classDefsInFileCache.get( realFile );
-        if( fileWithClassDefs != null && fileWithClassDefs.fileNotChanges() ) {
+        FileWithClassDefs fileWithClassDefs = classDefsInFileCache.get(realFile);
+        if (fileWithClassDefs != null && fileWithClassDefs.fileNotChanges()) {
             // found the file in cache and it has not changed on disk
             return fileWithClassDefs.getClassDefs();
         }
@@ -91,7 +91,7 @@ public class ClassStateHashCreator {
         String classDefs = buf.toString();
 
         // store it in cache
-        classDefsInFileCache.put( realFile, new FileWithClassDefs(realFile, classDefs));
+        classDefsInFileCache.put(realFile, new FileWithClassDefs(realFile, classDefs));
         return classDefs;
     }
 

@@ -1,15 +1,14 @@
 package play.data.binding;
 
+import org.apache.commons.lang.StringUtils;
+import play.i18n.Lang;
+import play.libs.I18N;
+
 import java.lang.annotation.Annotation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import org.apache.commons.lang.StringUtils;
-
-import play.i18n.Lang;
-import play.libs.I18N;
 
 public class AnnotationHelper {
 
@@ -20,7 +19,6 @@ public class AnnotationHelper {
      * @param value
      * @return null if it cannot be converted because there is no annotation.
      * @throws ParseException
-     *
      */
     public static Date getDateAs(Annotation[] annotations, String value) throws ParseException {
         // Look up for the BindAs annotation
@@ -80,7 +78,7 @@ public class AnnotationHelper {
      * Contains the index of the locale inside the @As
      */
     private static class Tuple {
-        
+
         public int index = -1;
         public Locale locale;
 

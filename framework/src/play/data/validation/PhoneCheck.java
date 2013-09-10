@@ -1,11 +1,11 @@
 package play.data.validation;
 
-import java.util.regex.Pattern;
-
 import net.sf.oval.Validator;
 import net.sf.oval.configuration.annotation.AbstractAnnotationCheck;
 import net.sf.oval.context.OValContext;
 import net.sf.oval.exception.OValException;
+
+import java.util.regex.Pattern;
 
 public class PhoneCheck extends AbstractAnnotationCheck<Phone> {
 
@@ -20,7 +20,7 @@ public class PhoneCheck extends AbstractAnnotationCheck<Phone> {
 
     @Override
     public boolean isSatisfied(Object validatedObject, Object value, OValContext context, Validator validator)
-    throws OValException {
+            throws OValException {
         if (value == null || value.toString().length() == 0) {
             return true;
         }

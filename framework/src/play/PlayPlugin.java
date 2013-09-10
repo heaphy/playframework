@@ -1,13 +1,6 @@
 package play;
 
-import java.lang.annotation.Annotation;
 import com.google.gson.JsonObject;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.data.binding.RootParamNode;
 import play.db.Model;
@@ -20,6 +13,14 @@ import play.templates.Template;
 import play.test.BaseTest;
 import play.test.TestEngine.TestResults;
 import play.vfs.VirtualFile;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A framework plugin
@@ -50,6 +51,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Use method using RootParamNode instead
+     *
      * @return
      */
     @Deprecated
@@ -59,11 +61,11 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Called when play need to bind a Java object from HTTP params.
-     *
+     * <p/>
      * When overriding this method, do not call super impl.. super impl is calling old bind method
      * to be backward compatible.
      */
-    public Object bind( RootParamNode rootParamNode, String name, Class<?> clazz, Type type, Annotation[] annotations) {
+    public Object bind(RootParamNode rootParamNode, String name, Class<?> clazz, Type type, Annotation[] annotations) {
         // call old method to be backward compatible
         return bind(name, clazz, type, annotations, rootParamNode.originalParams);
     }
@@ -83,13 +85,13 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
      */
     public Object bindBean(RootParamNode rootParamNode, String name, Object bean) {
         // call old method to be backward compatible.
-        return bind( rootParamNode.getOriginalKey(), bean, rootParamNode.originalParams);
+        return bind(rootParamNode.getOriginalKey(), bean, rootParamNode.originalParams);
     }
 
     public Map<String, Object> unBind(Object src, String name) {
         return null;
     }
-    
+
     /**
      * Translate the given key for the given locale and arguments.
      * If null is returned, Play's normal message translation mechanism will be
@@ -115,6 +117,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Enhance this class
+     *
      * @param applicationClass
      * @throws java.lang.Exception
      */
@@ -123,6 +126,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * This hook is not plugged, don't implement it
+     *
      * @param template
      */
     @Deprecated
@@ -131,7 +135,8 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Give a chance to this plugin to fully manage this request
-     * @param request The Play request
+     *
+     * @param request  The Play request
      * @param response The Play response
      * @return true if this plugin has managed this request
      */
@@ -141,7 +146,8 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Let a chance to this plugin to manage a static resource
-     * @param request The Play request
+     *
+     * @param request  The Play request
      * @param response The Play response
      * @return true if this plugin has managed this request
      */
@@ -208,6 +214,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Called if an exception occured during the invocation.
+     *
      * @param e The catched exception.
      */
     public void onInvocationException(Throwable e) {
@@ -230,6 +237,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Called when the action method has thrown a result.
+     *
      * @param result The result object for the request.
      */
     public void onActionInvocationResult(Result result) {
@@ -240,6 +248,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Called when the request has been routed.
+     *
      * @param route The route selected.
      */
     public void onRequestRouting(Route route) {
@@ -263,8 +272,9 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
     public void onRoutesLoaded() {
     }
 
-    /** 
+    /**
      * Event may be sent by plugins or other components
+     *
      * @param message convention: pluginClassShortName.message
      * @param context depends on the plugin
      */
@@ -282,6 +292,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
     /**
      * Override to provide additional mime types from your plugin. These mimetypes get priority over
      * the default framework mimetypes but not over the application's configuration.
+     *
      * @return a Map from extensions (without dot) to mimetypes
      */
     public Map<String, String> addMimeTypes() {
@@ -298,6 +309,7 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
 
     /**
      * Let some plugins route themself
+     *
      * @param request
      */
     public void routeRequest(Request request) {
@@ -323,14 +335,14 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
     // ~~~~~
     public int compareTo(PlayPlugin o) {
         int res = index < o.index ? -1 : (index == o.index ? 0 : 1);
-        if (res!=0) {
+        if (res != 0) {
             return res;
         }
 
         // index is equal in both plugins.
         // sort on classtype to get consistent order
         res = this.getClass().getName().compareTo(o.getClass().getName());
-        if (res != 0 ) {
+        if (res != 0) {
             // classnames where different
             return res;
         }
@@ -352,5 +364,5 @@ public abstract class PlayPlugin implements Comparable<PlayPlugin> {
     public Object willBeValidated(Object value) {
         return null;
     }
-    
+
 }

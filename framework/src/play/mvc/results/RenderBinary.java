@@ -1,15 +1,15 @@
 package play.mvc.results;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-
 import org.apache.commons.codec.net.URLCodec;
 import play.exceptions.UnexpectedException;
 import play.libs.MimeTypes;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
+
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 
 /**
  * 200 OK with application/octet-stream
@@ -29,7 +29,8 @@ public class RenderBinary extends Result {
 
     /**
      * send a binary stream as the response
-     * @param is the stream to read from
+     *
+     * @param is   the stream to read from
      * @param name the name to use as Content-Diposition attachement filename
      */
     public RenderBinary(InputStream is, String name) {
@@ -42,8 +43,9 @@ public class RenderBinary extends Result {
 
     /**
      * send a binary stream as the response
-     * @param is the stream to read from
-     * @param name the name to use as Content-Diposition attachement filename
+     *
+     * @param is     the stream to read from
+     * @param name   the name to use as Content-Diposition attachement filename
      * @param inline true to set the response Content-Disposition to inline
      */
     public RenderBinary(InputStream is, String name, boolean inline) {
@@ -52,8 +54,9 @@ public class RenderBinary extends Result {
 
     /**
      * send a binary stream as the response
-     * @param is the stream to read from
-     * @param name the name to use as Content-Diposition attachement filename
+     *
+     * @param is     the stream to read from
+     * @param name   the name to use as Content-Diposition attachement filename
      * @param inline true to set the response Content-Disposition to inline
      */
     public RenderBinary(InputStream is, String name, String contentType, boolean inline) {
@@ -62,7 +65,7 @@ public class RenderBinary extends Result {
         this.contentType = contentType;
         this.inline = inline;
     }
-    
+
     public RenderBinary(InputStream is, String name, long length, String contentType, boolean inline) {
         this.is = is;
         this.name = name;
@@ -80,7 +83,7 @@ public class RenderBinary extends Result {
 
     /**
      * Send a file as the response. Content-disposion is set to attachment.
-     * 
+     *
      * @param file readable file to send back
      * @param name a name to use as Content-disposion's filename
      */
@@ -92,8 +95,9 @@ public class RenderBinary extends Result {
     }
 
     /**
-     * Send a file as the response. 
+     * Send a file as the response.
      * Content-disposion is set to attachment, name is taken from file's name
+     *
      * @param file readable file to send back
      */
     public RenderBinary(File file) {
@@ -101,8 +105,9 @@ public class RenderBinary extends Result {
     }
 
     /**
-     * Send a file as the response. 
+     * Send a file as the response.
      * Content-disposion is set to attachment, name is taken from file's name
+     *
      * @param file readable file to send back
      */
     public RenderBinary(File file, String name, boolean inline) {
@@ -124,21 +129,21 @@ public class RenderBinary extends Result {
                 response.contentType = contentType;
             }
             String dispositionType;
-            if(inline) {
+            if (inline) {
                 dispositionType = INLINE_DISPOSITION_TYPE;
             } else {
                 dispositionType = ATTACHMENT_DISPOSITION_TYPE;
             }
             if (!response.headers.containsKey("Content-Disposition")) {
-                if(name == null) {
+                if (name == null) {
                     response.setHeader("Content-Disposition", dispositionType);
                 } else {
-                    if(canAsciiEncode(name)) {
+                    if (canAsciiEncode(name)) {
                         String contentDisposition = "%s; filename=\"%s\"";
                         response.setHeader("Content-Disposition", String.format(contentDisposition, dispositionType, name));
                     } else {
                         final String encoding = getEncoding();
-                        String contentDisposition = "%1$s; filename*="+encoding+"''%2$s; filename=\"%2$s\"";
+                        String contentDisposition = "%1$s; filename*=" + encoding + "''%2$s; filename=\"%2$s\"";
                         response.setHeader("Content-Disposition", String.format(contentDisposition, dispositionType, encoder.encode(name, encoding)));
                     }
                 }

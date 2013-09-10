@@ -1,15 +1,14 @@
 package play.utils;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.security.cert.X509Certificate;
-
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.security.cert.X509Certificate;
 
 /**
  * SSL Sockets created by this factory won't check
@@ -29,6 +28,7 @@ public class YesSSLSocketFactory extends SSLSocketFactory {
             return new X509Certificate[0];
         }
     }
+
     private SSLSocketFactory factory;
 
     public YesSSLSocketFactory() {

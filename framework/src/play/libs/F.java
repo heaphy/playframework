@@ -1,23 +1,10 @@
 package play.libs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicLong;
-
 import play.exceptions.UnexpectedException;
+
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class F {
 
@@ -59,6 +46,7 @@ public class F {
             }
             return result;
         }
+
         List<F.Action<Promise<V>>> callbacks = new ArrayList<F.Action<Promise<V>>>();
         boolean invoked = false;
         V result = null;
@@ -571,7 +559,7 @@ public class F {
         }
 
         void notifyNewEvent() {
-            for (ListIterator<FilterTask<T>> it = waiting.listIterator(); it.hasNext();) {
+            for (ListIterator<FilterTask<T>> it = waiting.listIterator(); it.hasNext(); ) {
                 FilterTask<T> filter = it.next();
                 for (IndexedEvent<T> event : events) {
                     filter.propose(event);
@@ -657,6 +645,7 @@ public class F {
             return "None";
         }
     }
+
     public static None<Object> None = new None<Object>();
 
     public static class Some<T> extends Option<T> {
@@ -953,6 +942,7 @@ public class F {
                 }
             };
         }
+
         public static Matcher<Object, String> String = new Matcher<Object, String>() {
 
             @Override

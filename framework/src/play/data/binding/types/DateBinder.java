@@ -1,13 +1,14 @@
 package play.data.binding.types;
 
+import play.data.binding.AnnotationHelper;
 import play.data.binding.TypeBinder;
+import play.libs.I18N;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import play.data.binding.AnnotationHelper;
-import play.libs.I18N;
 
 /**
  * Binder that support Date class.

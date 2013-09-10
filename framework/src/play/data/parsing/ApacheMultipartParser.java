@@ -1,28 +1,10 @@
 package play.data.parsing;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-
 import org.apache.commons.fileupload.*;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.util.Closeable;
 import org.apache.commons.fileupload.util.LimitedInputStream;
 import org.apache.commons.fileupload.util.Streams;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
-import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
@@ -34,6 +16,9 @@ import play.data.Upload;
 import play.exceptions.UnexpectedException;
 import play.mvc.Http.Request;
 import play.utils.HTTP;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * From Apache commons fileupload.
@@ -557,14 +542,14 @@ public class ApacheMultipartParser extends DataParser {
                     // must resolve encoding
                     String _encoding = Request.current().encoding; // this is our default
                     String _contentType = fileItem.getContentType();
-                    if( _contentType != null ) {
+                    if (_contentType != null) {
                         HTTP.ContentTypeWithEncoding contentTypeEncoding = HTTP.parseContentType(_contentType);
-                        if( contentTypeEncoding.encoding != null ) {
+                        if (contentTypeEncoding.encoding != null) {
                             _encoding = contentTypeEncoding.encoding;
                         }
                     }
 
-                    putMapEntry(result, fileItem.getFieldName(), fileItem.getString( _encoding ));
+                    putMapEntry(result, fileItem.getFieldName(), fileItem.getString(_encoding));
                 } else {
                     @SuppressWarnings("unchecked") List<Upload> uploads = (List<Upload>) Request.current().args.get("__UPLOADS");
                     if (uploads == null) {
@@ -743,7 +728,7 @@ public class ApacheMultipartParser extends DataParser {
         final int len = headerPart.length();
         Map<String, String> headers = new HashMap<String, String>();
         int start = 0;
-        for (; ;) {
+        for (; ; ) {
             int end = parseEndOfLine(headerPart, start);
             if (start == end) {
                 break;
@@ -781,7 +766,7 @@ public class ApacheMultipartParser extends DataParser {
      */
     private int parseEndOfLine(String headerPart, int end) {
         int index = end;
-        for (; ;) {
+        for (; ; ) {
             int offset = headerPart.indexOf('\r', index);
             if (offset == -1 || offset + 1 >= headerPart.length()) {
                 throw new IllegalStateException("Expected headers to be terminated by an empty line.");
@@ -1046,7 +1031,7 @@ public class ApacheMultipartParser extends DataParser {
                 currentItem.close();
                 currentItem = null;
             }
-            for (; ;) {
+            for (; ; ) {
                 boolean nextPart;
                 if (skipPreamble) {
                     nextPart = multi.skipPreamble();

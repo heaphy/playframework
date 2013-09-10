@@ -1,8 +1,9 @@
 package play.exceptions;
 
+import play.classloading.ApplicationClasses.ApplicationClass;
+
 import java.util.Arrays;
 import java.util.List;
-import play.classloading.ApplicationClasses.ApplicationClass;
 
 /**
  * A Java exception

@@ -1,12 +1,12 @@
 package play.mvc.results;
 
-import java.util.Map;
-
 import play.exceptions.UnexpectedException;
 import play.libs.MimeTypes;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
 import play.templates.Template;
+
+import java.util.Map;
 
 /**
  * 200 OK with a template rendering

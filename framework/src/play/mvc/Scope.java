@@ -1,15 +1,5 @@
 package play.mvc;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import play.Logger;
 import play.Play;
 import play.data.binding.Binder;
@@ -23,6 +13,15 @@ import play.libs.Codec;
 import play.libs.Crypto;
 import play.libs.Time;
 import play.utils.Utils;
+
+import java.lang.annotation.Annotation;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * All application Scopes
@@ -67,7 +66,7 @@ public class Scope {
                 return;
             }
             if (out.isEmpty()) {
-                if(Http.Request.current().cookies.containsKey(COOKIE_PREFIX + "_FLASH") || !SESSION_SEND_ONLY_IF_CHANGED) {
+                if (Http.Request.current().cookies.containsKey(COOKIE_PREFIX + "_FLASH") || !SESSION_SEND_ONLY_IF_CHANGED) {
                     Http.Response.current().setCookie(COOKIE_PREFIX + "_FLASH", "", null, "/", 0, COOKIE_SECURE);
                 }
                 return;
@@ -87,6 +86,7 @@ public class Scope {
                 throw new UnexpectedException("Flash serializationProblem", e);
             }
         }        // ThreadLocal access
+
         public static ThreadLocal<Flash> current = new ThreadLocal<Flash>();
 
         public static Flash current() {
@@ -215,6 +215,7 @@ public class Scope {
                 throw new UnexpectedException("Corrupted HTTP session from " + Http.Request.current().remoteAddress, e);
             }
         }
+
         Map<String, String> data = new HashMap<String, String>(); // ThreadLocal access
         boolean changed = false;
         public static ThreadLocal<Session> current = new ThreadLocal<Session>();
@@ -251,13 +252,13 @@ public class Scope {
                 // Some request like WebSocket don't have any response
                 return;
             }
-            if(!changed && SESSION_SEND_ONLY_IF_CHANGED && COOKIE_EXPIRE == null) {
+            if (!changed && SESSION_SEND_ONLY_IF_CHANGED && COOKIE_EXPIRE == null) {
                 // Nothing changed and no cookie-expire, consequently send nothing back.
                 return;
             }
             if (isEmpty()) {
                 // The session is empty: delete the cookie
-                if(Http.Request.current().cookies.containsKey(COOKIE_PREFIX + "_SESSION") || !SESSION_SEND_ONLY_IF_CHANGED) {
+                if (Http.Request.current().cookies.containsKey(COOKIE_PREFIX + "_SESSION") || !SESSION_SEND_ONLY_IF_CHANGED) {
                     Http.Response.current().setCookie(COOKIE_PREFIX + "_SESSION", "", null, "/", 0, COOKIE_SECURE, SESSION_HTTPONLY);
                 }
                 return;
@@ -357,6 +358,7 @@ public class Scope {
         public static Params current() {
             return current.get();
         }
+
         boolean requestIsParsed;
         public Map<String, String[]> data = new HashMap<String, String[]>();
 

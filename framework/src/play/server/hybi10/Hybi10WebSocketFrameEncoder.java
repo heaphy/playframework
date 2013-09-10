@@ -6,10 +6,8 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.http.websocket.DefaultWebSocketFrame;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
-import play.Logger;
 
 import java.nio.ByteBuffer;
-import java.security.SecureRandom;
 
 /**
  * Encodes frames going out. Frames are not masked.
@@ -28,15 +26,15 @@ public class Hybi10WebSocketFrameEncoder extends OneToOneEncoder {
             final DefaultWebSocketFrame frame = (DefaultWebSocketFrame) msg;
 
             ChannelBuffer data = frame.getBinaryData();
-			if (data == null) {
-				data = ChannelBuffers.EMPTY_BUFFER;
-			}
+            if (data == null) {
+                data = ChannelBuffers.EMPTY_BUFFER;
+            }
 
             byte opcode;
             // TODO: Close and CONTINUATION
-            if(frame instanceof Ping) {
+            if (frame instanceof Ping) {
                 opcode = OPCODE_PING;
-            } else if(frame instanceof Pong) {
+            } else if (frame instanceof Pong) {
                 opcode = OPCODE_PONG;
             } else {
                 opcode = frame.isText() ? OPCODE_TEXT : OPCODE_BINARY;
@@ -45,11 +43,11 @@ public class Hybi10WebSocketFrameEncoder extends OneToOneEncoder {
 
             int length = data.readableBytes();
 
-			int b0 = 0;
-		    b0 |= (1 << 7);
+            int b0 = 0;
+            b0 |= (1 << 7);
             // TODO: RSV, for now it is set to 0
-			b0 |= (0 % 8) << 4;
-			b0 |= opcode % 128;
+            b0 |= (0 % 8) << 4;
+            b0 |= opcode % 128;
 
             ChannelBuffer header;
             ChannelBuffer body;

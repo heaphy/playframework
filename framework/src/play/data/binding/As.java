@@ -1,10 +1,6 @@
 package play.data.binding;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Type;
 
 
@@ -13,8 +9,11 @@ import java.lang.reflect.Type;
 public @interface As {
 
     String[] value() default {""};
+
     String[] lang() default {"*"};
+
     String[] format() default {"html"};
+
     Class<? extends TypeBinder<?>> binder() default DEFAULT.class;
 
     public static final class DEFAULT implements TypeBinder<Object> {
@@ -22,5 +21,5 @@ public @interface As {
             throw new UnsupportedOperationException("Not supported.");
         }
     }
-    
+
 }

@@ -1,8 +1,5 @@
 package play.data.binding;
 
-import play.data.binding.As;
-import play.data.binding.NoBinding;
-
 import java.lang.annotation.Annotation;
 
 class BindingAnnotations {
@@ -40,7 +37,7 @@ class BindingAnnotations {
                 }
             }
         }
-        if (profiles==null) {
+        if (profiles == null) {
             profiles = new String[0];
         }
 
@@ -48,7 +45,7 @@ class BindingAnnotations {
     }
 
     private String[] getNoBindingProfiles() {
-        if (noBindingProfiles!=null) {
+        if (noBindingProfiles != null) {
             return noBindingProfiles;
         }
 
@@ -61,7 +58,7 @@ class BindingAnnotations {
             }
         }
 
-        if (noBindingProfiles==null) {
+        if (noBindingProfiles == null) {
             noBindingProfiles = new String[0];
         }
         return noBindingProfiles;
@@ -72,12 +69,12 @@ class BindingAnnotations {
         final String[] _profiles = getProfiles();
         final String[] _noBindingProfiles = getNoBindingProfiles();
 
-        if (_noBindingProfiles.length>0) {
+        if (_noBindingProfiles.length > 0) {
             for (String l : _noBindingProfiles) {
                 if ("*".equals(l)) {
                     return true;
                 }
-                if (_profiles.length>0) {
+                if (_profiles.length > 0) {
                     for (String p : _profiles) {
                         if (l.equals(p) || "*".equals(p)) {
                             return true;

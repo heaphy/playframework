@@ -1,12 +1,13 @@
 package play.data.binding.types;
 
+import play.data.Upload;
 import play.data.binding.TypeBinder;
+import play.mvc.Http.Request;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
-import play.data.Upload;
-import play.mvc.Http.Request;
 
 /**
  * Bind file form multipart/form-data request.

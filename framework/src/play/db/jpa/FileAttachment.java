@@ -1,10 +1,11 @@
 package play.db.jpa;
 
-import java.io.File;
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
 import play.Play;
 import play.libs.Files;
+
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
+import java.io.File;
 
 /**
  * Please use play.db.jpa.Blob now
@@ -88,5 +89,5 @@ public class FileAttachment {
     public long length() {
         return get().length();
     }
-    
+
 }

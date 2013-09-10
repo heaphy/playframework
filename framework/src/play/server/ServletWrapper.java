@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
 
@@ -204,7 +203,7 @@ public class ServletWrapper extends HttpServlet implements ServletContextListene
     }
 
     public static boolean isModified(String etag, long last,
-            HttpServletRequest request) {
+                                     HttpServletRequest request) {
         // See section 14.26 in rfc 2616 http://www.faqs.org/rfcs/rfc2616.html
         String browserEtag = request.getHeader(IF_NONE_MATCH);
         String dateString = request.getHeader(IF_MODIFIED_SINCE);
@@ -441,9 +440,9 @@ public class ServletWrapper extends HttpServlet implements ServletContextListene
     public void copyResponse(Request request, Response response, HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException {
         String encoding = Response.current().encoding;
         if (response.contentType != null) {
-            servletResponse.setHeader("Content-Type", response.contentType + (response.contentType.startsWith("text/") ? "; charset="+encoding : ""));
+            servletResponse.setHeader("Content-Type", response.contentType + (response.contentType.startsWith("text/") ? "; charset=" + encoding : ""));
         } else {
-            servletResponse.setHeader("Content-Type", "text/plain;charset="+encoding);
+            servletResponse.setHeader("Content-Type", "text/plain;charset=" + encoding);
         }
 
         servletResponse.setStatus(response.status);

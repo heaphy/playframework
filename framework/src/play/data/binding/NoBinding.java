@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 public @interface NoBinding {
 
     String[] value() default {"*"};
+
     String[] format() default {"html"};
 
 }

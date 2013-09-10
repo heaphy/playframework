@@ -3,11 +3,12 @@ package play.mvc.results;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import play.exceptions.UnexpectedException;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
-import play.exceptions.UnexpectedException;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * 200 OK with application/json
@@ -40,7 +41,7 @@ public class RenderJson extends Result {
     public void apply(Request request, Response response) {
         try {
             String encoding = getEncoding();
-            setContentTypeIfNotSet(response, "application/json; charset="+encoding);
+            setContentTypeIfNotSet(response, "application/json; charset=" + encoding);
             response.out.write(json.getBytes(encoding));
         } catch (Exception e) {
             throw new UnexpectedException(e);

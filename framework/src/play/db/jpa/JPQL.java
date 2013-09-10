@@ -1,16 +1,15 @@
 package play.db.jpa;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import play.Play;
 import play.data.binding.ParamNode;
 import play.data.binding.RootParamNode;
 import play.db.jpa.GenericModel.JPAQuery;
 import play.mvc.Scope.Params;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Map;
 
 public class JPQL {
 
@@ -25,7 +24,7 @@ public class JPQL {
     public long count(String entity, String query, Object[] params) {
         return Long.parseLong(
                 bindParameters(em().createQuery(
-                createCountQuery(entity, entity, query, params)), params).getSingleResult().toString());
+                        createCountQuery(entity, entity, query, params)), params).getSingleResult().toString());
     }
 
     public List findAll(String entity) {
@@ -176,7 +175,7 @@ public class JPQL {
         return q;
     }
 
-    public Query bindParameters(Query q, Map<String,Object> params) {
+    public Query bindParameters(Query q, Map<String, Object> params) {
         if (params == null) {
             return q;
         }
@@ -229,11 +228,11 @@ public class JPQL {
                 }
             } else if (part.endsWith("Ilike")) {
                 String prop = extractProp(part, "Ilike");
-                 if (isHSQL()) {
+                if (isHSQL()) {
                     jpql.append("LCASE(" + prop + ") like LCASE(?)");
-                 } else {
+                } else {
                     jpql.append("LOWER(" + prop + ") like LOWER(?)");
-                 }
+                }
             } else if (part.endsWith("Elike")) {
                 String prop = extractProp(part, "Elike");
                 jpql.append(prop + " like ?");
@@ -258,5 +257,6 @@ public class JPQL {
         prop = (prop.charAt(0) + "").toLowerCase() + prop.substring(1);
         return prop;
     }
+
     public static JPQL instance = null;
 }

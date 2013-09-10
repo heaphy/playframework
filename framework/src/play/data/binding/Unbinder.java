@@ -1,18 +1,14 @@
 package play.data.binding;
 
+import play.Play;
+import play.libs.I18N;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import play.Logger;
-import play.Play;
-import play.data.binding.types.DateBinder;
-import play.libs.I18N;
-import play.utils.Utils;
 
 /**
  * Try to unbind an object to a Map<String,String>
@@ -23,8 +19,8 @@ public class Unbinder {
         if (src == null) {
             return;
         }
-        if (src instanceof  Class) {
-            return ;
+        if (src instanceof Class) {
+            return;
         }
         unBind(result, src, src.getClass(), name, annotations);
     }

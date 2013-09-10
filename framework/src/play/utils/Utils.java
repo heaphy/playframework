@@ -109,6 +109,7 @@ public class Utils {
             }
         }
     }
+
     private static ThreadLocal<SimpleDateFormat> httpFormatter = new ThreadLocal<SimpleDateFormat>();
 
     public static SimpleDateFormat getHttpDateFormatter() {
@@ -136,8 +137,8 @@ public class Utils {
     public static Map<String, String> filterParams(Map<String, String[]> params, String prefix, String separator) {
         Map<String, String> filteredMap = new LinkedHashMap<String, String>();
         prefix += ".";
-        for(Map.Entry<String, String[]> e: params.entrySet()){
-            if(e.getKey().startsWith(prefix)) {
+        for (Map.Entry<String, String[]> e : params.entrySet()) {
+            if (e.getKey().startsWith(prefix)) {
                 filteredMap.put(
                         e.getKey().substring(prefix.length()),
                         Utils.join(e.getValue(), separator)
@@ -154,8 +155,8 @@ public class Utils {
     public static void kill(String pid) throws Exception {
         String os = System.getProperty("os.name");
         String command = (os.startsWith("Windows"))
-                       ? "taskkill /F /PID " + pid
-                       : "kill " + pid;
+                ? "taskkill /F /PID " + pid
+                : "kill " + pid;
         Runtime.getRuntime().exec(command).waitFor();
     }
 
@@ -187,6 +188,7 @@ public class Utils {
             }
             throw new ParseException("Date format not understood", 0);
         }
+
         static ThreadLocal<AlternativeDateFormat> dateformat = new ThreadLocal<AlternativeDateFormat>();
 
         public static AlternativeDateFormat getDefaultFormatter() {
@@ -204,7 +206,7 @@ public class Utils {
                         "dd'/'MM'/'yyyy HH:mm:ss",
                         "dd-MM-yyyy HH:mm:ss",
                         "ddMMyyyy HHmmss",
-                "ddMMyyyy"));
+                        "ddMMyyyy"));
             }
             return dateformat.get();
         }
@@ -212,8 +214,8 @@ public class Utils {
 
     public static String urlDecodePath(String enc) {
         try {
-          return URLDecoder.decode(enc.replaceAll("\\+", "%2B"), "UTF-8");
-        } catch(Exception e) {
+            return URLDecoder.decode(enc.replaceAll("\\+", "%2B"), "UTF-8");
+        } catch (Exception e) {
             return enc;
         }
     }

@@ -1,21 +1,22 @@
 package play.cache;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import play.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * EhCache implementation.
- *
+ * <p/>
  * <p>Ehcache is an open source, standards-based cache used to boost performance,
  * offload the database and simplify scalability. Ehcache is robust, proven and
  * full-featured and this has made it the most widely-used Java-based cache.</p>
  *
  * @see http://ehcache.org/
- *
- * expiration is specified in seconds
+ *      <p/>
+ *      expiration is specified in seconds
  */
 public class EhCacheImpl implements CacheImpl {
 

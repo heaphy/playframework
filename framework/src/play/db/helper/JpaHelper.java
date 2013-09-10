@@ -1,15 +1,16 @@
 package play.db.helper;
 
-import java.util.List;
-import javax.persistence.Query;
 import play.db.jpa.JPA;
+
+import javax.persistence.Query;
+import java.util.List;
 
 public class JpaHelper {
 
     private JpaHelper() {
     }
 
-    public static Query execute(String sql, Object ... params) {
+    public static Query execute(String sql, Object... params) {
         Query query = JPA.em().createQuery(sql);
         int index = 0;
         for (Object param : params) {

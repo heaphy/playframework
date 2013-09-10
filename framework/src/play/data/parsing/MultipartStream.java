@@ -1,49 +1,46 @@
 package play.data.parsing;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.util.Closeable;
 import org.apache.commons.fileupload.util.Streams;
 
+import java.io.*;
+
 /**
  * <p> Low level API for processing file uploads.
- *
+ * <p/>
  * <p> This class can be used to process data streams conforming to MIME
  * 'multipart' format as defined in
  * <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a>. Arbitrarily
  * large amounts of data in the stream can be processed under constant
  * memory usage.
- *
+ * <p/>
  * <p> The format of the stream is defined in the following way:<br>
- *
+ * <p/>
  * <code>
- *   multipart-body := preamble 1*encapsulation close-delimiter epilogue<br>
- *   encapsulation := delimiter body CRLF<br>
- *   delimiter := "--" boundary CRLF<br>
- *   close-delimiter := "--" boudary "--"<br>
- *   preamble := &lt;ignore&gt;<br>
- *   epilogue := &lt;ignore&gt;<br>
- *   body := header-part CRLF body-part<br>
- *   header-part := 1*header CRLF<br>
- *   header := header-name ":" header-value<br>
- *   header-name := &lt;printable ascii characters except ":"&gt;<br>
- *   header-value := &lt;any ascii characters except CR & LF&gt;<br>
- *   body-data := &lt;arbitrary data&gt;<br>
+ * multipart-body := preamble 1*encapsulation close-delimiter epilogue<br>
+ * encapsulation := delimiter body CRLF<br>
+ * delimiter := "--" boundary CRLF<br>
+ * close-delimiter := "--" boudary "--"<br>
+ * preamble := &lt;ignore&gt;<br>
+ * epilogue := &lt;ignore&gt;<br>
+ * body := header-part CRLF body-part<br>
+ * header-part := 1*header CRLF<br>
+ * header := header-name ":" header-value<br>
+ * header-name := &lt;printable ascii characters except ":"&gt;<br>
+ * header-value := &lt;any ascii characters except CR & LF&gt;<br>
+ * body-data := &lt;arbitrary data&gt;<br>
  * </code>
- *
+ * <p/>
  * <p>Note that body-data can contain another mulipart entity.  There
  * is limited support for single pass processing of such nested
  * streams.  The nested stream is <strong>required</strong> to have a
  * boundary token of the same length as the parent stream (see {@link
  * #setBoundary(byte[])}).
- *
+ * <p/>
  * <p>Here is an example of usage of this class.<br>
- *
+ * <p/>
  * <pre>
  *    try {
  *        MultipartStream multipartStream = new MultipartStream(input,
@@ -68,7 +65,6 @@ import org.apache.commons.fileupload.util.Streams;
  * @author <a href="mailto:Rafal.Krzewski@e-point.pl">Rafal Krzewski</a>
  * @author <a href="mailto:martinc@apache.org">Martin Cooper</a>
  * @author Sean C. Sullivan
- *
  * @version $Id: MultipartStream.java 174 2007-11-04 21:25:00Z leo $
  */
 public class MultipartStream {
@@ -79,22 +75,28 @@ public class MultipartStream {
      */
     static class ProgressNotifier {
 
-        /** The listener to invoke.
+        /**
+         * The listener to invoke.
          */
         private final ProgressListener listener;
-        /** Number of expected bytes, if known, or -1.
+        /**
+         * Number of expected bytes, if known, or -1.
          */
         private final long contentLength;
-        /** Number of bytes, which have been read so far.
+        /**
+         * Number of bytes, which have been read so far.
          */
         private long bytesRead;
-        /** Number of items, which have been read so far.
+        /**
+         * Number of items, which have been read so far.
          */
         private int items;
 
-        /** Creates a new instance with the given listener
+        /**
+         * Creates a new instance with the given listener
          * and content length.
-         * @param pListener The listener to invoke.
+         *
+         * @param pListener      The listener to invoke.
          * @param pContentLength The expected content length.
          */
         ProgressNotifier(ProgressListener pListener, long pContentLength) {
@@ -102,7 +104,9 @@ public class MultipartStream {
             contentLength = pContentLength;
         }
 
-        /** Called to indicate that bytes have been read.
+        /**
+         * Called to indicate that bytes have been read.
+         *
          * @param pBytes Number of bytes, which have been read.
          */
         void noteBytesRead(int pBytes) {
@@ -113,13 +117,15 @@ public class MultipartStream {
             notifyListener();
         }
 
-        /** Called to indicate, that a new file item has been detected.
+        /**
+         * Called to indicate, that a new file item has been detected.
          */
         void noteItem() {
             ++items;
         }
 
-        /** Called for notifying the listener.
+        /**
+         * Called for notifying the listener.
          */
         private void notifyListener() {
             if (listener != null) {
@@ -155,27 +161,27 @@ public class MultipartStream {
      * (<code>CRLFCRLF</code>).
      */
     protected static final byte[] HEADER_SEPARATOR = {
-        CR, LF, CR, LF
+            CR, LF, CR, LF
     };
     /**
      * A byte sequence that that follows a delimiter that will be
      * followed by an encapsulation (<code>CRLF</code>).
      */
     protected static final byte[] FIELD_SEPARATOR = {
-        CR, LF
+            CR, LF
     };
     /**
      * A byte sequence that that follows a delimiter of the last
      * encapsulation in the stream (<code>--</code>).
      */
     protected static final byte[] STREAM_TERMINATOR = {
-        DASH, DASH
+            DASH, DASH
     };
     /**
      * A byte sequence that precedes a boundary (<code>CRLF--</code>).
      */
     protected static final byte[] BOUNDARY_PREFIX = {
-        CR, LF, DASH, DASH
+            CR, LF, DASH, DASH
     };
     /**
      * The number of bytes, over and above the boundary size, to use for the
@@ -230,10 +236,12 @@ public class MultipartStream {
     private final ProgressNotifier notifier;
 
     // ----------------------------------------------------------- Constructors
+
     /**
      * Creates a new instance.
+     *
      * @deprecated Use {@link #MultipartStream(InputStream, byte[], ProgressNotifier)},
-     * or {@link #MultipartStream(InputStream, byte[], int, ProgressNotifier)}
+     *             or {@link #MultipartStream(InputStream, byte[], int, ProgressNotifier)}
      */
     public MultipartStream() {
         this(null, null, null);
@@ -242,7 +250,7 @@ public class MultipartStream {
     /**
      * <p> Constructs a <code>MultipartStream</code> with a custom size buffer
      * and no progress notifier.
-     *
+     * <p/>
      * <p> Note that the buffer must be at least big enough to contain the
      * boundary string, plus 4 characters for CR/LF and double dash, plus at
      * least one byte of data.  Too small a buffer size setting will degrade
@@ -252,7 +260,6 @@ public class MultipartStream {
      * @param boundary The token used for dividing the stream into
      *                 <code>encapsulations</code>.
      * @param bufSize  The size of the buffer to be used, in bytes.
-     *
      * @see #MultipartStream(InputStream, byte[], ProgressNotifier)
      * @deprecated Use {@link #MultipartStream(InputStream, byte[], int, ProgressNotifier)}.
      */
@@ -262,25 +269,24 @@ public class MultipartStream {
 
     /**
      * <p> Constructs a <code>MultipartStream</code> with a custom size buffer.
-     *
+     * <p/>
      * <p> Note that the buffer must be at least big enough to contain the
      * boundary string, plus 4 characters for CR/LF and double dash, plus at
      * least one byte of data.  Too small a buffer size setting will degrade
      * performance.
      *
-     * @param input    The <code>InputStream</code> to serve as a data source.
-     * @param boundary The token used for dividing the stream into
-     *                 <code>encapsulations</code>.
-     * @param bufSize  The size of the buffer to be used, in bytes.
+     * @param input     The <code>InputStream</code> to serve as a data source.
+     * @param boundary  The token used for dividing the stream into
+     *                  <code>encapsulations</code>.
+     * @param bufSize   The size of the buffer to be used, in bytes.
      * @param pNotifier The notifier, which is used for calling the
      *                  progress listener, if any.
-     *
      * @see #MultipartStream(InputStream, byte[], ProgressNotifier)
      */
     MultipartStream(InputStream input,
-            byte[] boundary,
-            int bufSize,
-            ProgressNotifier pNotifier) {
+                    byte[] boundary,
+                    int bufSize,
+                    ProgressNotifier pNotifier) {
         this.input = input;
         this.bufSize = bufSize;
         this.buffer = new byte[bufSize];
@@ -303,17 +309,15 @@ public class MultipartStream {
     /**
      * <p> Constructs a <code>MultipartStream</code> with a default size buffer.
      *
-     * @param input    The <code>InputStream</code> to serve as a data source.
-     * @param boundary The token used for dividing the stream into
-     *                 <code>encapsulations</code>.
+     * @param input     The <code>InputStream</code> to serve as a data source.
+     * @param boundary  The token used for dividing the stream into
+     *                  <code>encapsulations</code>.
      * @param pNotifier An object for calling the progress listener, if any.
-     *
-     *
      * @see #MultipartStream(InputStream, byte[], int, ProgressNotifier)
      */
     MultipartStream(InputStream input,
-            byte[] boundary,
-            ProgressNotifier pNotifier) {
+                    byte[] boundary,
+                    ProgressNotifier pNotifier) {
         this(input, boundary, DEFAULT_BUFSIZE, pNotifier);
     }
 
@@ -323,17 +327,17 @@ public class MultipartStream {
      * @param input    The <code>InputStream</code> to serve as a data source.
      * @param boundary The token used for dividing the stream into
      *                 <code>encapsulations</code>.
-     *
-     * @deprecated Use {@link #MultipartStream(InputStream, byte[],
-     *  ProgressNotifier)}.
      * @see #MultipartStream(InputStream, byte[], int, ProgressNotifier)
+     * @deprecated Use {@link #MultipartStream(InputStream, byte[],
+     *             ProgressNotifier)}.
      */
     public MultipartStream(InputStream input,
-            byte[] boundary) {
+                           byte[] boundary) {
         this(input, boundary, DEFAULT_BUFSIZE, null);
     }
 
     // --------------------------------------------------------- Public methods
+
     /**
      * Retrieves the character encoding used when reading the headers of an
      * individual part. When not specified, or <code>null</code>, the platform
@@ -361,7 +365,6 @@ public class MultipartStream {
      * necessary.
      *
      * @return The next byte from the input stream.
-     *
      * @throws IOException if there is no more data available.
      */
     public byte readByte()
@@ -375,7 +378,7 @@ public class MultipartStream {
                 // No more data available.
                 throw new IOException("No more data is available");
             }
-            if(notifier != null) {
+            if (notifier != null) {
                 notifier.noteBytesRead(tail);
             }
         }
@@ -388,7 +391,6 @@ public class MultipartStream {
      *
      * @return <code>true</code> if there are more encapsulations in
      *         this stream; <code>false</code> otherwise.
-     *
      * @throws MalformedStreamException if the stream ends unexpecetedly or
      *                                  fails to follow required syntax.
      */
@@ -427,19 +429,18 @@ public class MultipartStream {
 
     /**
      * <p>Changes the boundary token used for partitioning the stream.
-     *
+     * <p/>
      * <p>This method allows single pass processing of nested multipart
      * streams.
-     *
+     * <p/>
      * <p>The boundary token of the nested stream is <code>required</code>
      * to be of the same length as the boundary token in parent stream.
-     *
+     * <p/>
      * <p>Restoring the parent stream boundary token after processing of a
      * nested stream is left to the application.
      *
      * @param boundary The boundary to be used for parsing of the nested
      *                 stream.
-     *
      * @throws IllegalBoundaryException if the <code>boundary</code>
      *                                  has a different length than the one
      *                                  being currently parsed.
@@ -457,16 +458,15 @@ public class MultipartStream {
     /**
      * <p>Reads the <code>header-part</code> of the current
      * <code>encapsulation</code>.
-     *
+     * <p/>
      * <p>Headers are returned verbatim to the input stream, including the
      * trailing <code>CRLF</code> marker. Parsing is left to the
      * application.
-     *
+     * <p/>
      * <p><strong>TODO</strong> allow limiting maximum header size to
      * protect against abuse.
      *
      * @return The <code>header-part</code> of the current encapsulation.
-     *
      * @throws MalformedStreamException if the stream ends unexpecetedly.
      */
     public String readHeaders()
@@ -514,17 +514,15 @@ public class MultipartStream {
      * <p>Reads <code>body-data</code> from the current
      * <code>encapsulation</code> and writes its contents into the
      * output <code>Stream</code>.
-     *
+     * <p/>
      * <p>Arbitrary large amounts of data can be processed by this
      * method using a constant size buffer. (see {@link
-     * #MultipartStream(InputStream,byte[],int, ProgressNotifier) constructor}).
+     * #MultipartStream(InputStream, byte[], int, ProgressNotifier) constructor}).
      *
      * @param output The <code>Stream</code> to write data into. May
      *               be null, in which case this method is equivalent
      *               to {@link #discardBodyData()}.
-     *
      * @return the amount of data written.
-     *
      * @throws MalformedStreamException if the stream ends unexpectedly.
      * @throws IOException              if an i/o error occurs.
      */
@@ -536,6 +534,7 @@ public class MultipartStream {
 
     /**
      * Creates a new {@link ItemInputStream}.
+     *
      * @return A new instance of {@link ItemInputStream}.
      */
     ItemInputStream newInputStream() {
@@ -545,12 +544,11 @@ public class MultipartStream {
     /**
      * <p> Reads <code>body-data</code> from the current
      * <code>encapsulation</code> and discards it.
-     *
+     * <p/>
      * <p>Use this method to skip encapsulations you don't need or don't
      * understand.
      *
      * @return The amount of data discarded.
-     *
      * @throws MalformedStreamException if the stream ends unexpectedly.
      * @throws IOException              if an i/o error occurs.
      */
@@ -565,7 +563,6 @@ public class MultipartStream {
      *
      * @return <code>true</code> if an <code>encapsulation</code> was found in
      *         the stream.
-     *
      * @throws IOException if an i/o error occurs.
      */
     public boolean skipPreamble()
@@ -598,13 +595,12 @@ public class MultipartStream {
      * @param a     The first array to compare.
      * @param b     The second array to compare.
      * @param count How many bytes should be compared.
-     *
      * @return <code>true</code> if <code>count</code> first bytes in arrays
      *         <code>a</code> and <code>b</code> are equal.
      */
     public static boolean arrayequals(byte[] a,
-            byte[] b,
-            int count) {
+                                      byte[] b,
+                                      int count) {
         for (int i = 0; i < count; i++) {
             if (a[i] != b[i]) {
                 return false;
@@ -619,12 +615,11 @@ public class MultipartStream {
      *
      * @param value The value to find.
      * @param pos   The starting position for searching.
-     *
      * @return The position of byte found, counting from beginning of the
      *         <code>buffer</code>, or <code>-1</code> if not found.
      */
     protected int findByte(byte value,
-            int pos) {
+                           int pos) {
         for (int i = pos; i < tail; i++) {
             if (buffer[i] == value) {
                 return i;
@@ -647,8 +642,8 @@ public class MultipartStream {
         int match = 0;
         int maxpos = tail - boundaryLength;
         for (first = head;
-                (first <= maxpos) && (match != boundaryLength);
-                first++) {
+             (first <= maxpos) && (match != boundaryLength);
+             first++) {
             first = findByte(boundary[0], first);
             if (first == -1 || (first > maxpos)) {
                 return -1;
@@ -721,17 +716,21 @@ public class MultipartStream {
      */
     public class ItemInputStream extends InputStream implements Closeable {
 
-        /** The number of bytes, which have been read so far.
+        /**
+         * The number of bytes, which have been read so far.
          */
         private long total;
-        /** The number of bytes, which must be hold, because
+        /**
+         * The number of bytes, which must be hold, because
          * they might be a part of the boundary.
          */
         private int pad;
-        /** The current offset in the buffer.
+        /**
+         * The current offset in the buffer.
          */
         private int pos;
-        /** Whether the stream is already closed.
+        /**
+         * Whether the stream is already closed.
          */
         private boolean closed;
 
@@ -759,6 +758,7 @@ public class MultipartStream {
         /**
          * Returns the number of bytes, which have been read
          * by the stream.
+         *
          * @return Number of bytes, which have been read so far.
          */
         public long getBytesRead() {
@@ -768,8 +768,9 @@ public class MultipartStream {
         /**
          * Returns the number of bytes, which are currently
          * available, without blocking.
-         * @throws IOException An I/O error occurs.
+         *
          * @return Number of bytes in the buffer.
+         * @throws IOException An I/O error occurs.
          */
         public int available() throws IOException {
             if (pos == -1) {
@@ -777,14 +778,17 @@ public class MultipartStream {
             }
             return pos - head;
         }
-        /** Offset when converting negative bytes to integers.
+
+        /**
+         * Offset when converting negative bytes to integers.
          */
         private static final int BYTE_POSITIVE_OFFSET = 256;
 
         /**
          * Returns the next byte in the stream.
+         *
          * @return The next byte in the stream, as a non-negative
-         *   integer, or -1 for EOF.
+         *         integer, or -1 for EOF.
          * @throws IOException An I/O error occurred.
          */
         public int read() throws IOException {
@@ -806,11 +810,12 @@ public class MultipartStream {
 
         /**
          * Reads bytes into the given buffer.
-         * @param b The destination buffer, where to write to.
+         *
+         * @param b   The destination buffer, where to write to.
          * @param off Offset of the first byte in the buffer.
          * @param len Maximum number of bytes to read.
          * @return Number of bytes, which have been actually read,
-         *   or -1 for EOF.
+         *         or -1 for EOF.
          * @throws IOException An I/O error occurred.
          */
         public int read(byte[] b, int off, int len) throws IOException {
@@ -836,13 +841,14 @@ public class MultipartStream {
 
         /**
          * Closes the input stream.
+         *
          * @throws IOException An I/O error occurred.
          */
         public void close() throws IOException {
             if (closed) {
                 return;
             }
-            for (;;) {
+            for (; ; ) {
                 int av = available();
                 if (av == 0) {
                     av = makeAvailable();
@@ -857,9 +863,10 @@ public class MultipartStream {
 
         /**
          * Skips the given number of bytes.
+         *
          * @param bytes Number of bytes to skip.
          * @return The number of bytes, which have actually been
-         *   skipped.
+         *         skipped.
          * @throws IOException An I/O error occurred.
          */
         public long skip(long bytes) throws IOException {
@@ -880,6 +887,7 @@ public class MultipartStream {
 
         /**
          * Attempts to read more data.
+         *
          * @return Number of available bytes
          * @throws IOException An I/O error occurred.
          */
@@ -910,6 +918,7 @@ public class MultipartStream {
 
         /**
          * Returns, whether the stream is closed.
+         *
          * @return True, if the stream is closed, otherwise false.
          */
         public boolean isClosed() {

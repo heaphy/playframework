@@ -1,11 +1,11 @@
 package play.libs;
 
-import java.util.List;
-import java.util.Map;
-
 import org.jaxen.dom.DOMXPath;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * XPath for parsing
@@ -15,10 +15,11 @@ public class XPath {
     /**
      * Select all nodes that are selected by this XPath expression. If multiple nodes match,
      * multiple nodes will be returned. Nodes will be returned in document-order,
+     *
      * @param path
      * @param node
      * @param namespaces Namespaces that need to be available in the xpath, where the key is the
-     * prefix and the value the namespace URI
+     *                   prefix and the value the namespace URI
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -33,6 +34,7 @@ public class XPath {
     /**
      * Select all nodes that are selected by this XPath expression. If multiple nodes match,
      * multiple nodes will be returned. Nodes will be returned in document-order,
+     *
      * @param path
      * @param node
      * @return
@@ -59,6 +61,7 @@ public class XPath {
 
     /**
      * Return the text of a node, or the value of an attribute
+     *
      * @param path the XPath to execute
      * @param node the node, node-set or Context object for evaluation. This value can be null.
      */
@@ -82,6 +85,7 @@ public class XPath {
 
     /**
      * Return the text of a node, or the value of an attribute
+     *
      * @param path the XPath to execute
      * @param node the node, node-set or Context object for evaluation. This value can be null.
      */
@@ -92,7 +96,7 @@ public class XPath {
     private static DOMXPath getDOMXPath(String path, Map<String, String> namespaces) throws Exception {
         DOMXPath xpath = new DOMXPath(path);
         if (namespaces != null) {
-            for (String prefix: namespaces.keySet()) {
+            for (String prefix : namespaces.keySet()) {
                 xpath.addNamespace(prefix, namespaces.get(prefix));
             }
         }

@@ -1,8 +1,9 @@
 package play.exceptions;
 
+import play.templates.Template;
+
 import java.util.Arrays;
 import java.util.List;
-import play.templates.Template;
 
 /**
  * An exception during template execution

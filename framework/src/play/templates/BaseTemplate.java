@@ -1,10 +1,5 @@
 package play.templates;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import play.Logger;
 import play.Play;
 import play.classloading.BytecodeCache;
@@ -15,6 +10,12 @@ import play.exceptions.TemplateExecutionException;
 import play.exceptions.TemplateExecutionException.DoBodyException;
 import play.libs.Codec;
 import play.libs.IO;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A template
@@ -94,6 +95,7 @@ public abstract class BaseTemplate extends Template {
     }
 
     abstract Throwable cleanStackTrace(Throwable e);
+
     public static ThreadLocal<BaseTemplate> layout = new ThreadLocal<BaseTemplate>();
     public static ThreadLocal<Map<Object, Object>> layoutData = new ThreadLocal<Map<Object, Object>>();
     public static ThreadLocal<BaseTemplate> currentTemplate = new ThreadLocal<BaseTemplate>();

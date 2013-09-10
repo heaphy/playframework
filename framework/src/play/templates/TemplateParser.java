@@ -27,6 +27,7 @@ public class TemplateParser {
         ABS_ACTION, // @@{...}
         COMMENT, // *{...}*
     }
+
     private int end, begin, end2, begin2, len;
     private Token state = Token.PLAIN;
 
@@ -58,9 +59,9 @@ public class TemplateParser {
         }
         return "";
     }
-    
+
     public Token nextToken() {
-        for (;;) {
+        for (; ; ) {
 
             int left = len - end;
             if (left == 0) {

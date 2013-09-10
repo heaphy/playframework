@@ -17,15 +17,15 @@ public class Redirect extends Result {
         this.url = url;
     }
 
-    public Redirect(String url,boolean permanent) {
+    public Redirect(String url, boolean permanent) {
         this.url = url;
         if (permanent)
             this.code = Http.StatusCode.MOVED;
     }
 
-    public Redirect(String url,int code) {
+    public Redirect(String url, int code) {
         this.url = url;
-        this.code=code;
+        this.code = code;
     }
 
     public void apply(Request request, Response response) {

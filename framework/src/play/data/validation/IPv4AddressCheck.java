@@ -16,15 +16,15 @@ public class IPv4AddressCheck extends AbstractAnnotationCheck<IPv4Address> {
 
     @Override
     public boolean isSatisfied(Object validatedObject, Object value, OValContext context, Validator validator)
-    throws OValException {
+            throws OValException {
         if (value == null || value.toString().length() == 0) {
             return true;
         }
         try {
             String[] parts = value.toString().split("[.]");
-            for(int i=0; i<parts.length; i++) {
+            for (int i = 0; i < parts.length; i++) {
                 int p = Integer.valueOf(parts[i]);
-                if(p < 0 || p > 255) {
+                if (p < 0 || p > 255) {
                     return false;
                 }
             }

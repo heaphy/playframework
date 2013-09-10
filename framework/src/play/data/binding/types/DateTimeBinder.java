@@ -1,11 +1,10 @@
 package play.data.binding.types;
 
+import org.joda.time.DateTime;
+import play.data.binding.TypeBinder;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-
-import org.joda.time.DateTime;
-
-import play.data.binding.TypeBinder;
 
 /**
  * Binder that support Date class.

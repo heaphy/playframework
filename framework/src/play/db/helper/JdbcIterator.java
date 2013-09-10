@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 /**
  * Iterate over a JDBC ResultSet
+ *
  * @author yma
  */
 public class JdbcIterator<T> implements Iterator<T>, Iterable<T>, Closeable {
@@ -55,7 +56,7 @@ public class JdbcIterator<T> implements Iterator<T>, Iterable<T>, Closeable {
     }
 
     public static void close(Iterator<?> iterator) {
-        if (iterator instanceof JdbcIterator<?>) ((JdbcIterator<?>)iterator).close();
+        if (iterator instanceof JdbcIterator<?>) ((JdbcIterator<?>) iterator).close();
     }
 
 

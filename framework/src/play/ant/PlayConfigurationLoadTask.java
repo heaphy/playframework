@@ -1,5 +1,13 @@
 package play.ant;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.selectors.FilenameSelector;
+import org.apache.tools.ant.util.FileUtils;
+import play.libs.IO;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,35 +17,35 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.selectors.FilenameSelector;
-import org.apache.tools.ant.util.FileUtils;
-
-import play.libs.IO;
-
 /**
  * Ant task which loads settings needed by the ant from the ant configuration file.
- *
+ * <p/>
  * These include:
  * - Resolving the settings for the given play id and setting them to the ant project properties
  * - Creating classpath element for the module libraries
- *
  */
 public class PlayConfigurationLoadTask {
 
     private Project project;
-    /** Play id */
+    /**
+     * Play id
+     */
     private String playId = "";
-    /** Prefix to use for the properties loaded from the configuration file */
+    /**
+     * Prefix to use for the properties loaded from the configuration file
+     */
     private String prefix = "application.conf.";
-    /** Id for the classpath element */
+    /**
+     * Id for the classpath element
+     */
     private String modulesClasspath = "modules.classpath";
-    /** Source file to read */
+    /**
+     * Source file to read
+     */
     private File applicationDir;
-    /** Properties extracted from the conf file */
+    /**
+     * Properties extracted from the conf file
+     */
     private Map<String, String> properties = null;
 
     public void setProject(Project project) {
@@ -62,7 +70,7 @@ public class PlayConfigurationLoadTask {
         }
 
         // Add the properties from application.conf as ant properties
-        for (Map.Entry<String,String> entry: properties().entrySet()) {
+        for (Map.Entry<String, String> entry : properties().entrySet()) {
             String key = entry.getKey();
             String value = project.replaceProperties(entry.getValue());
             project.setProperty(prefix + key, value);
@@ -74,7 +82,7 @@ public class PlayConfigurationLoadTask {
         FilenameSelector endsToJar = new FilenameSelector();
         endsToJar.setName("*.jar");
 
-        for (File module: modules()) {
+        for (File module : modules()) {
             File moduleLib = new File(module, "lib");
             if (moduleLib.exists()) {
                 FileSet fileSet = new FileSet();
@@ -92,8 +100,9 @@ public class PlayConfigurationLoadTask {
 
     /**
      * Load all properties from the given conf file, resolving the id
+     *
      * @param srcFile the conf file
-     * @param playId the current id
+     * @param playId  the current id
      * @return a Map of key, values corresponding to the entries in the conf file
      */
     private Map<String, String> properties() {
@@ -103,8 +112,8 @@ public class PlayConfigurationLoadTask {
             throw new BuildException("No application configuration found! " + srcFile.getAbsolutePath());
         }
         try {
-            properties = new HashMap<String,String>();
-            Map<String,String> idSpecific = new HashMap<String,String>();
+            properties = new HashMap<String, String>();
+            Map<String, String> idSpecific = new HashMap<String, String>();
             BufferedReader reader = new BufferedReader(new FileReader(srcFile));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -142,7 +151,7 @@ public class PlayConfigurationLoadTask {
         Set<File> modules = new HashSet<File>();
 
         // Old-skool
-        for (Map.Entry<String,String> entry: properties().entrySet()) {
+        for (Map.Entry<String, String> entry : properties().entrySet()) {
             if (!entry.getKey().startsWith("module.")) {
                 continue;
             }
@@ -163,7 +172,7 @@ public class PlayConfigurationLoadTask {
         // 1.2+ fashion
         File modulesDir = new File(applicationDir, "modules");
         if (modulesDir.exists()) {
-            for (File child: modulesDir.listFiles()) {
+            for (File child : modulesDir.listFiles()) {
                 if (child == null) {
                     // No-op
                 } else if (child.isDirectory()) {

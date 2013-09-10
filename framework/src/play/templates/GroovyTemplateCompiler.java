@@ -1,18 +1,14 @@
 package play.templates;
 
 import groovy.lang.Closure;
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 import play.Play;
 import play.exceptions.TemplateCompilationException;
 import play.templates.GroovyInlineTags.CALL;
+
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * The template compiler
@@ -30,7 +26,7 @@ public class GroovyTemplateCompiler extends TemplateCompiler {
     public BaseTemplate compile(BaseTemplate template) {
         try {
             extensionsClassnames.clear();
-            extensionsClassnames.addAll( Play.pluginCollection.addTemplateExtensions());
+            extensionsClassnames.addAll(Play.pluginCollection.addTemplateExtensions());
             List<Class> extensionsClasses = Play.classloader.getAssignableClasses(JavaExtensions.class);
             for (Class extensionsClass : extensionsClasses) {
                 extensionsClassnames.add(extensionsClass.getName());
@@ -77,20 +73,20 @@ public class GroovyTemplateCompiler extends TemplateCompiler {
 
         if (!names.isEmpty()) {
 
-            if (names.size() <= 1 || source.indexOf("new ")>=0) {
+            if (names.size() <= 1 || source.indexOf("new ") >= 0) {
                 for (String cName : names) { // dynamic class binding
                     source = source.replaceAll("new " + Pattern.quote(cName) + "(\\([^)]*\\))", "_('" + originalNames.get(cName) + "').newInstance$1");
                 }
             }
 
-            if (names.size() <= 1 || source.indexOf("instanceof")>=0) {
+            if (names.size() <= 1 || source.indexOf("instanceof") >= 0) {
                 for (String cName : names) { // dynamic class binding
                     source = source.replaceAll("([a-zA-Z0-9.-_$]+)\\s+instanceof\\s+" + Pattern.quote(cName), "_('" + originalNames.get(cName).replace("$", "\\$") + "').isAssignableFrom($1.class)");
 
                 }
             }
 
-            if (names.size() <= 1 || source.indexOf(".class")>=0) {
+            if (names.size() <= 1 || source.indexOf(".class") >= 0) {
                 for (String cName : names) { // dynamic class binding
                     source = source.replaceAll("([^.])" + Pattern.quote(cName) + ".class", "$1_('" + originalNames.get(cName) + "')");
 
@@ -159,27 +155,27 @@ public class GroovyTemplateCompiler extends TemplateCompiler {
 
         // [#714] The groovy-compiler complaints if a line is more than 65535 unicode units long..
         // Have to split it if it is really that big
-        if (text.length() <maxPlainTextLength) {
+        if (text.length() < maxPlainTextLength) {
             // text is "short" - just print it
-            println("out.print(\""+text+"\");");
+            println("out.print(\"" + text + "\");");
         } else {
             // text is long - must split it
             int offset = 0;
             do {
-                int endPos = offset+maxPlainTextLength;
-                if (endPos>text.length()) {
+                int endPos = offset + maxPlainTextLength;
+                if (endPos > text.length()) {
                     endPos = text.length();
                 } else {
                     // #869 If the last char (at endPos-1) is \, we're dealing with escaped char - must include the next one also..
-                    if ( text.charAt(endPos-1) == '\\') {
+                    if (text.charAt(endPos - 1) == '\\') {
                         // use one more char so the escaping is not broken. Don't have to check length, since
                         // all '\' is used in escaping, ref replaceAll above..
                         endPos++;
                     }
                 }
-                println("out.print(\""+text.substring(offset, endPos)+"\");");
-                offset+= (endPos - offset);
-            }while(offset < text.length());
+                println("out.print(\"" + text.substring(offset, endPos) + "\");");
+                offset += (endPos - offset);
+            } while (offset < text.length());
         }
     }
 
@@ -204,7 +200,7 @@ public class GroovyTemplateCompiler extends TemplateCompiler {
     @Override
     void expr() {
         String expr = parser.getToken().trim();
-        print(";out.print(__safeFaster("+expr+"))");
+        print(";out.print(__safeFaster(" + expr + "))");
         markLine(parser.getLine());
         println();
     }
@@ -212,7 +208,7 @@ public class GroovyTemplateCompiler extends TemplateCompiler {
     @Override
     void message() {
         String expr = parser.getToken().trim();
-        print(";out.print(__getMessage("+expr+"))");
+        print(";out.print(__getMessage(" + expr + "))");
         markLine(parser.getLine());
         println();
     }
@@ -222,9 +218,9 @@ public class GroovyTemplateCompiler extends TemplateCompiler {
         String action = parser.getToken().trim();
         if (action.trim().matches("^'.*'$")) {
             if (absolute) {
-                print("\tout.print(__reverseWithCheck_absolute_true("+action+"));");
+                print("\tout.print(__reverseWithCheck_absolute_true(" + action + "));");
             } else {
-                print("\tout.print(__reverseWithCheck_absolute_false("+action+"));");
+                print("\tout.print(__reverseWithCheck_absolute_false(" + action + "));");
             }
         } else {
             if (!action.endsWith(")")) {
@@ -255,7 +251,7 @@ public class GroovyTemplateCompiler extends TemplateCompiler {
             }
             // We only have to try to replace the following if we find at least one
             // @ in tagArgs..
-            if (tagArgs.indexOf('@')>=0) {
+            if (tagArgs.indexOf('@') >= 0) {
                 tagArgs = tagArgs.replaceAll("[:]\\s*[@]{2}", ":actionBridge._abs().");
                 tagArgs = tagArgs.replaceAll("(\\s)[@]{2}", "$1actionBridge._abs().");
                 tagArgs = tagArgs.replaceAll("[:]\\s*[@]{1}", ":actionBridge.");

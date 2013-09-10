@@ -8,7 +8,7 @@ public class Status extends Result {
     int code;
 
     public Status(int code) {
-        super(code+"");
+        super(code + "");
         this.code = code;
     }
 

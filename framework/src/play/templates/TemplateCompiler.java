@@ -1,11 +1,12 @@
 package play.templates;
 
-import java.util.Stack;
 import play.Logger;
-import play.vfs.VirtualFile;
-import play.exceptions.TemplateCompilationException;
 import play.exceptions.PlayException;
+import play.exceptions.TemplateCompilationException;
 import play.exceptions.UnexpectedException;
+import play.vfs.VirtualFile;
+
+import java.util.Stack;
 
 public abstract class TemplateCompiler {
 
@@ -54,7 +55,7 @@ public abstract class TemplateCompiler {
 
         // Parse
         loop:
-        for (;;) {
+        for (; ; ) {
 
             if (doNextScan) {
                 state = parser.nextToken();

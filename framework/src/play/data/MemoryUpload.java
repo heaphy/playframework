@@ -1,9 +1,10 @@
 package play.data;
 
-import java.io.File;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import org.apache.commons.fileupload.FileItem;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 
 public class MemoryUpload implements Upload {
 
@@ -16,7 +17,7 @@ public class MemoryUpload implements Upload {
     public File asFile() {
         throw new UnsupportedOperationException();
     }
-    
+
     public byte[] asBytes() {
         return fileItem.get();
     }
@@ -40,7 +41,7 @@ public class MemoryUpload implements Upload {
     public Long getSize() {
         return fileItem.getSize();
     }
-    
+
     public boolean isInMemory() {
         return fileItem.isInMemory();
     }

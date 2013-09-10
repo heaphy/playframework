@@ -1,14 +1,5 @@
 package play.classloading;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javassist.ClassPool;
 import javassist.CtClass;
 import play.Logger;
@@ -17,6 +8,15 @@ import play.PlayPlugin;
 import play.classloading.enhancers.Enhancer;
 import play.exceptions.UnexpectedException;
 import play.vfs.VirtualFile;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Application classes container.
@@ -41,6 +41,7 @@ public class ApplicationClasses {
 
     /**
      * Get a class by name
+     *
      * @param name The fully qualified class name
      * @return The ApplicationClass or null
      */
@@ -53,6 +54,7 @@ public class ApplicationClasses {
 
     /**
      * Retrieve all application classes assignable to this class.
+     *
      * @param clazz The superclass, or the interface.
      * @return A list of application classes.
      */
@@ -81,6 +83,7 @@ public class ApplicationClasses {
 
     /**
      * Retrieve all application classes with a specific annotation.
+     *
      * @param clazz The annotation class.
      * @return A list of application classes.
      */
@@ -104,6 +107,7 @@ public class ApplicationClasses {
 
     /**
      * All loaded classes.
+     *
      * @return All loaded classes
      */
     public List<ApplicationClass> all() {
@@ -130,6 +134,7 @@ public class ApplicationClasses {
 
     /**
      * Does this class is already loaded ?
+     *
      * @param name The fully qualified class name
      */
     public boolean hasClass(String name) {
@@ -209,6 +214,7 @@ public class ApplicationClasses {
 
         /**
          * Enhance this class
+         *
          * @return the enhanced byteCode
          */
         public byte[] enhance() {
@@ -227,7 +233,7 @@ public class ApplicationClasses {
                     if (ctClass.subclassOf(ctPlayPluginClass)) {
                         shouldEnhance = false;
                     }
-                } catch( Exception e) {
+                } catch (Exception e) {
                     // nop
                 }
 
@@ -253,6 +259,7 @@ public class ApplicationClasses {
 
         /**
          * Is this class already compiled but not defined ?
+         *
          * @return if the class is compiled but not defined
          */
         public boolean isDefinable() {
@@ -270,6 +277,7 @@ public class ApplicationClasses {
 
         /**
          * Compile the class from Java source
+         *
          * @return the bytes that comprise the class file
          */
         public byte[] compile() {
@@ -292,6 +300,7 @@ public class ApplicationClasses {
 
         /**
          * Call back when a class is compiled.
+         *
          * @param code The bytecode.
          */
         public void compiled(byte[] code) {
@@ -308,10 +317,12 @@ public class ApplicationClasses {
     }
 
     // ~~ Utils
+
     /**
      * Retrieve the corresponding source file for a given class name.
      * It handles innerClass too !
-     * @param name The fully qualified class name 
+     *
+     * @param name The fully qualified class name
      * @return The virtualFile if found
      */
     public static VirtualFile getJava(String name) {

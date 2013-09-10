@@ -239,6 +239,7 @@ public class Play {
 
         Logger.info("Starting %s", root.getAbsolutePath());
 
+        //TODO:为什么预编译时依然需要tmp目录？
         if (configuration.getProperty("play.tmp", "tmp").equals("none")) {
             tmpDir = null;
             Logger.debug("No tmp folder will be used (play.tmp is set to none)");

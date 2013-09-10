@@ -12,10 +12,11 @@ public abstract class Template {
 
     /**
      * Starts the rendering process without modifying the args-map
+     *
      * @param args map containing data binding info
      * @return the result of the complete rendering
      */
-    public String render( Map<String, Object> args ) {
+    public String render(Map<String, Object> args) {
         // starts the internal recursive rendering process with
         // a copy of the passed args-map. This is done
         // to prevent us from polution the users map with
@@ -23,7 +24,7 @@ public abstract class Template {
         //
         // Since the original args is not poluted it can be used as input
         // to another rendering operation later
-        return internalRender( new HashMap<String, Object>(args) );
+        return internalRender(new HashMap<String, Object>(args));
     }
 
 
@@ -33,7 +34,7 @@ public abstract class Template {
      * templates "communicate" with each other by storing info in the map
      */
     protected abstract String internalRender(Map<String, Object> args);
-    
+
     public String render() {
         return internalRender(new HashMap<String, Object>());
     }

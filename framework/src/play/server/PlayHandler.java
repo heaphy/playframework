@@ -42,12 +42,10 @@ import play.vfs.VirtualFile;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,14 +68,15 @@ public class PlayHandler extends SimpleChannelUpstreamHandler {
     private static final String ACCEPT_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private static final Charset ASCII = Charset.forName("ASCII");
     private static final MessageDigest SHA_1;
+
     static {
         try {
             SHA_1 = MessageDigest.getInstance("SHA1");
         } catch (NoSuchAlgorithmException e) {
             throw new InternalError("SHA-1 not supported on this platform");
         }
-    } 
-    
+    }
+
     static {
         exposePlayServer = !"false".equals(Play.configuration.getProperty("http.exposePlayServer"));
     }
@@ -398,10 +397,10 @@ public class PlayHandler extends SimpleChannelUpstreamHandler {
         } else {
             nettyResponse.setHeader(CONTENT_TYPE, "text/plain; charset=" + response.encoding);
         }
-        
+
         final boolean keepAlive = isKeepAlive(nettyRequest);
-        
-        if(keepAlive && nettyRequest.getProtocolVersion().equals(HttpVersion.HTTP_1_0)) {
+
+        if (keepAlive && nettyRequest.getProtocolVersion().equals(HttpVersion.HTTP_1_0)) {
             nettyResponse.setHeader(CONNECTION, "Keep-Alive");
         }
 
@@ -1073,7 +1072,7 @@ public class PlayHandler extends SimpleChannelUpstreamHandler {
             inbound._received(new Http.WebSocketFrame(webSocketFrame.getTextData()));
         }
     }
-    
+
     private String getWebSocketLocation(HttpRequest req) {
         return "ws://" + req.getHeader(HttpHeaders.Names.HOST) + req.getUri();
     }
@@ -1085,13 +1084,13 @@ public class PlayHandler extends SimpleChannelUpstreamHandler {
         p.replace("encoder", "wsencoder", new WebSocketFrameEncoder());
     }
 
-    protected void adjustPipelineToHybi(ChannelHandlerContext ctx) {    	
+    protected void adjustPipelineToHybi(ChannelHandlerContext ctx) {
         ChannelPipeline p = ctx.getChannel().getPipeline();
         p.remove("aggregator");
         p.replace("decoder", "wsdecoder", new Hybi10WebSocketFrameDecoder());
         p.replace("encoder", "wsencoder", new Hybi10WebSocketFrameEncoder());
     }
-    
+
     private boolean isHybi10WebSocketRequest(HttpRequest req) {
         return req.containsHeader("Sec-WebSocket-Version");
     }
@@ -1102,30 +1101,30 @@ public class PlayHandler extends SimpleChannelUpstreamHandler {
 
     private void upgradeResponseHybi10(HttpRequest req, HttpResponse res) {
         String version = req.getHeader("Sec-WebSocket-Version");
-        if(!"8".equals(version)) {
+        if (!"8".equals(version)) {
             res.setStatus(HttpResponseStatus.UPGRADE_REQUIRED);
             res.setHeader("Sec-WebSocket-Version", "8");
-           
+
             return;
         }
 
         String key = req.getHeader("Sec-WebSocket-Key");
-        if(key == null) {
+        if (key == null) {
             res.setStatus(HttpResponseStatus.BAD_REQUEST);
             Logger.info("BAD REQUEST");
 
             return;
         }
-       
+
         String accept = Base64.encode(sha1(key + ACCEPT_GUID));
 
         res.setStatus(new HttpResponseStatus(101, "Switching Protocols"));
         res.addHeader(UPGRADE, WEBSOCKET.toLowerCase());
         res.addHeader(CONNECTION, UPGRADE);
         res.addHeader("Sec-WebSocket-Accept", accept);
-        
+
     }
-   
+
 
     private byte[] sha1(String s) {
         return SHA_1.digest(s.getBytes(ASCII));
@@ -1172,7 +1171,7 @@ public class PlayHandler extends SimpleChannelUpstreamHandler {
             res.addHeader(WEBSOCKET_PROTOCOL, protocol);
         }
     }
-    
+
     private void websocketHandshake(final ChannelHandlerContext ctx, HttpRequest req, MessageEvent messageEvent) throws Exception {
 
         // Create the WebSocket handshake response.

@@ -1,5 +1,8 @@
 package play.libs;
 
+import org.apache.commons.io.FileUtils;
+import play.exceptions.UnexpectedException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,8 +11,6 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-import org.apache.commons.io.FileUtils;
-import play.exceptions.UnexpectedException;
 
 /**
  * Files utils
@@ -18,6 +19,7 @@ public class Files {
 
     /**
      * Just copy a file
+     *
      * @param from
      * @param to
      */
@@ -51,6 +53,7 @@ public class Files {
 
     /**
      * Just delete a file. If the file is a directory, it's work.
+     *
      * @param file The file to delete
      */
     public static boolean delete(File file) {
@@ -67,7 +70,7 @@ public class Files {
     public static boolean deleteDirectory(File path) {
         if (path.exists()) {
             File[] files = path.listFiles();
-            for (File file: files) {
+            for (File file : files) {
                 if (file.isDirectory()) {
                     deleteDirectory(file);
                 } else {
@@ -99,7 +102,7 @@ public class Files {
                     continue;
                 }
                 File f = new File(to, entry.getName());
-                if(!f.getCanonicalPath().startsWith(outDir)) {
+                if (!f.getCanonicalPath().startsWith(outDir)) {
                     throw new IOException("Corrupted zip file");
                 }
                 f.getParentFile().mkdirs();

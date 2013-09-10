@@ -161,7 +161,7 @@ public class Server {
         Play.init(root, System.getProperty("play.id", ""));
 
         if (System.getProperty("precompile") == null) {
-            //启动应用
+            //启动应用, run/start
             new Server(args);
         } else {
             //完成预编译等

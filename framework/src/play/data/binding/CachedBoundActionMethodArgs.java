@@ -14,7 +14,7 @@ public class CachedBoundActionMethodArgs {
     private Map<Method, Object[]> preBoundActionMethodArgs = new HashMap<Method, Object[]>(1);
 
     public static void init() {
-        current.set( new CachedBoundActionMethodArgs());
+        current.set(new CachedBoundActionMethodArgs());
     }
 
     public static void clear() {
@@ -25,11 +25,11 @@ public class CachedBoundActionMethodArgs {
         return current.get();
     }
 
-    public void storeActionMethodArgs( Method method, Object[] rArgs) {
+    public void storeActionMethodArgs(Method method, Object[] rArgs) {
         preBoundActionMethodArgs.put(method, rArgs);
     }
 
-    public Object[] retrieveActionMethodArgs( Method method) {
+    public Object[] retrieveActionMethodArgs(Method method) {
         return preBoundActionMethodArgs.get(method);
     }
 

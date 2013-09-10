@@ -1,7 +1,8 @@
 package play.exceptions;
 
-import java.util.concurrent.atomic.AtomicLong;
 import play.Play;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * The super class for all Play! exceptions

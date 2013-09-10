@@ -1,5 +1,10 @@
 package play.data.parsing;
 
+import play.Logger;
+import play.exceptions.UnexpectedException;
+import play.mvc.Http;
+import play.utils.Utils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -8,27 +13,22 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import play.Logger;
-import play.exceptions.UnexpectedException;
-import play.mvc.Http;
-import play.utils.Utils;
-
 /**
  * Parse url-encoded requests.
  */
 public class UrlEncodedParser extends DataParser {
-    
+
     boolean forQueryString = false;
-    
+
     public static Map<String, String[]> parse(String urlEncoded) {
         try {
             final String encoding = Http.Request.current().encoding;
-            return new UrlEncodedParser().parse(new ByteArrayInputStream(urlEncoded.getBytes( encoding )));
+            return new UrlEncodedParser().parse(new ByteArrayInputStream(urlEncoded.getBytes(encoding)));
         } catch (UnsupportedEncodingException ex) {
             throw new UnexpectedException(ex);
         }
     }
-    
+
     public static Map<String, String[]> parseQueryString(InputStream is) {
         UrlEncodedParser parser = new UrlEncodedParser();
         parser.forQueryString = true;
@@ -44,8 +44,8 @@ public class UrlEncodedParser extends DataParser {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int bytesRead;
-            while ( (bytesRead = is.read(buffer)) > 0 ) {
-                os.write( buffer, 0, bytesRead);
+            while ((bytesRead = is.read(buffer)) > 0) {
+                os.write(buffer, 0, bytesRead);
             }
 
             String data = new String(os.toByteArray(), encoding);
@@ -70,15 +70,15 @@ public class UrlEncodedParser extends DataParser {
             for (String keyValue : keyValues) {
                 // split this key-value on the first '='
                 int i = keyValue.indexOf('=');
-                String key=null;
-                String value=null;
-                if ( i > 0) {
-                    key = keyValue.substring(0,i);
-                    value = keyValue.substring(i+1);
+                String key = null;
+                String value = null;
+                if (i > 0) {
+                    key = keyValue.substring(0, i);
+                    value = keyValue.substring(i + 1);
                 } else {
                     key = keyValue;
                 }
-                if (key.length()>0) {
+                if (key.length() > 0) {
                     Utils.Maps.mergeValueInMap(params, key, value);
                 }
             }
@@ -121,8 +121,8 @@ public class UrlEncodedParser extends DataParser {
             }
 
             // add the complete body as a parameters
-            if(!forQueryString) {
-                decodedParams.put("body", new String[] {data});
+            if (!forQueryString) {
+                decodedParams.put("body", new String[]{data});
             }
 
             return decodedParams;

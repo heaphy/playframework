@@ -34,28 +34,86 @@ public class SqlSelect extends SqlQuery {
         params.addAll(src.getParams());
     }
 
-    @Override public SqlSelect param(Object obj) { super.param(obj); return this; }
-    @Override public SqlSelect params(Object ... objs) { super.params(objs); return this; }
+    @Override
+    public SqlSelect param(Object obj) {
+        super.param(obj);
+        return this;
+    }
 
-    public SqlSelect select(String ... expr) { select.add(expr); return this; }
-    public SqlSelect from(String ... expr) { from.add(expr); return this; }
-    public SqlSelect innerJoin(String ... expr) { join.prefix("INNER JOIN ").separator(" INNER JOIN ").add(expr); return this; }
-    public SqlSelect leftJoin(String ... expr) { join.prefix("LEFT JOIN ").separator(" LEFT JOIN ").add(expr); return this; }
-    public SqlSelect where(String ... expr) { return andWhere(expr); }
-    public SqlSelect andWhere(String ... expr) { where.separator(" AND ").add(expr); return this; }
-    public SqlSelect orWhere(String ... expr) { where.separator(" OR ").add(expr); return this; }
-    public SqlSelect groupBy(String ... expr) { groupBy.add(expr); return this; }
-    public SqlSelect orderBy(String ... expr) { orderBy.add(expr); return this; }
-    public SqlSelect limit(long lines) { limit.append(lines); return this; }
-    public SqlSelect limit(long offset, long lines) { limit.append(offset +", "+ lines); return this; }
+    @Override
+    public SqlSelect params(Object... objs) {
+        super.params(objs);
+        return this;
+    }
 
-    public Where where() { return new Where(this); }
-    public SqlSelect where(Where ... expr) { return andWhere(expr); }
-    public SqlSelect andWhere(Where ... expr) {
+    public SqlSelect select(String... expr) {
+        select.add(expr);
+        return this;
+    }
+
+    public SqlSelect from(String... expr) {
+        from.add(expr);
+        return this;
+    }
+
+    public SqlSelect innerJoin(String... expr) {
+        join.prefix("INNER JOIN ").separator(" INNER JOIN ").add(expr);
+        return this;
+    }
+
+    public SqlSelect leftJoin(String... expr) {
+        join.prefix("LEFT JOIN ").separator(" LEFT JOIN ").add(expr);
+        return this;
+    }
+
+    public SqlSelect where(String... expr) {
+        return andWhere(expr);
+    }
+
+    public SqlSelect andWhere(String... expr) {
+        where.separator(" AND ").add(expr);
+        return this;
+    }
+
+    public SqlSelect orWhere(String... expr) {
+        where.separator(" OR ").add(expr);
+        return this;
+    }
+
+    public SqlSelect groupBy(String... expr) {
+        groupBy.add(expr);
+        return this;
+    }
+
+    public SqlSelect orderBy(String... expr) {
+        orderBy.add(expr);
+        return this;
+    }
+
+    public SqlSelect limit(long lines) {
+        limit.append(lines);
+        return this;
+    }
+
+    public SqlSelect limit(long offset, long lines) {
+        limit.append(offset + ", " + lines);
+        return this;
+    }
+
+    public Where where() {
+        return new Where(this);
+    }
+
+    public SqlSelect where(Where... expr) {
+        return andWhere(expr);
+    }
+
+    public SqlSelect andWhere(Where... expr) {
         for (Where subquery : expr) andWhere(subquery.toString());
         return this;
     }
-    public SqlSelect orWhere(Where ... expr) {
+
+    public SqlSelect orWhere(Where... expr) {
         for (Where subquery : expr) orWhere(subquery.toString());
         return this;
     }
@@ -63,7 +121,7 @@ public class SqlSelect extends SqlQuery {
     @Override
     public String toString() {
         if (select.isEmpty() || from.isEmpty()) throw new IllegalArgumentException();
-        return new Concat(""," ").defaultValue(null)
+        return new Concat("", " ").defaultValue(null)
                 .append(select)
                 .append(from)
                 .append(join)
@@ -83,17 +141,45 @@ public class SqlSelect extends SqlQuery {
             where = new Concat("(", null, ")").defaultValue(null);
         }
 
-        public Where param(Object obj) { parent.param(obj); return this; }
-        public Where params(Object ... objs) { parent.params(objs); return this; }
-        public List<Object> getParams() { return parent.getParams(); }
+        public Where param(Object obj) {
+            parent.param(obj);
+            return this;
+        }
 
-        public int paramCurrentIndex() { return parent.paramCurrentIndex(); }
-        public String pmark() { return parent.pmark(); }
-        public String pmark(int offset) { return parent.pmark(offset); }
+        public Where params(Object... objs) {
+            parent.params(objs);
+            return this;
+        }
 
-        public Where where(String ... expr) { return andWhere(expr); }
-        public Where andWhere(String ... expr) { where.separator(" AND ").add(expr); return this; }
-        public Where orWhere(String ... expr) { where.separator(" OR ").add(expr); return this; }
+        public List<Object> getParams() {
+            return parent.getParams();
+        }
+
+        public int paramCurrentIndex() {
+            return parent.paramCurrentIndex();
+        }
+
+        public String pmark() {
+            return parent.pmark();
+        }
+
+        public String pmark(int offset) {
+            return parent.pmark(offset);
+        }
+
+        public Where where(String... expr) {
+            return andWhere(expr);
+        }
+
+        public Where andWhere(String... expr) {
+            where.separator(" AND ").add(expr);
+            return this;
+        }
+
+        public Where orWhere(String... expr) {
+            where.separator(" OR ").add(expr);
+            return this;
+        }
 
         @Override
         public String toString() {

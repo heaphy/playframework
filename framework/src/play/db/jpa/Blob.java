@@ -1,5 +1,14 @@
 package play.db.jpa;
 
+import org.hibernate.HibernateException;
+import org.hibernate.type.StringType;
+import org.hibernate.usertype.UserType;
+import play.Play;
+import play.db.Model.BinaryField;
+import play.exceptions.UnexpectedException;
+import play.libs.Codec;
+import play.libs.IO;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -9,40 +18,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.hibernate.HibernateException;
-import org.hibernate.type.StringType;
-import org.hibernate.usertype.UserType;
-
-import play.Play;
-import play.db.Model.BinaryField;
-import play.exceptions.UnexpectedException;
-import play.libs.Codec;
-import play.libs.IO;
-
 public class Blob implements BinaryField, UserType {
 
     private String UUID;
     private String type;
     private File file;
 
-    public Blob() {}
+    public Blob() {
+    }
 
     private Blob(String UUID, String type) {
         this.UUID = UUID;
         this.type = type;
     }
-    
+
     public InputStream get() {
-        if(exists()) {
+        if (exists()) {
             try {
                 return new FileInputStream(getFile());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new UnexpectedException(e);
             }
         }
         return null;
     }
-    
+
     public void set(InputStream is, String type) {
         this.UUID = Codec.UUID();
         this.type = type;
@@ -62,20 +62,20 @@ public class Blob implements BinaryField, UserType {
     }
 
     public File getFile() {
-        if(file == null) {
+        if (file == null) {
             file = new File(getStore(), UUID);
         }
         return file;
     }
-    
-    public String getUUID()  {
+
+    public String getUUID() {
         return UUID;
     }
 
     //
 
     public int[] sqlTypes() {
-        return new int[] {Types.VARCHAR};
+        return new int[]{Types.VARCHAR};
     }
 
     public Class returnedClass() {
@@ -92,25 +92,25 @@ public class Blob implements BinaryField, UserType {
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object o) throws HibernateException, SQLException {
         String val = (String) StringType.INSTANCE.nullSafeGet(rs, names[0]);
-        if(val == null || val.length() == 0 || !val.contains("|")) {
+        if (val == null || val.length() == 0 || !val.contains("|")) {
             return new Blob();
         }
         return new Blob(val.split("[|]")[0], val.split("[|]")[1]);
     }
 
     public void nullSafeSet(PreparedStatement ps, Object o, int i) throws HibernateException, SQLException {
-        if(o != null) {
-            ps.setString(i, ((Blob)o).UUID + "|" + ((Blob)o).type);
+        if (o != null) {
+            ps.setString(i, ((Blob) o).UUID + "|" + ((Blob) o).type);
         } else {
             ps.setNull(i, Types.VARCHAR);
         }
     }
 
     public Object deepCopy(Object o) throws HibernateException {
-        if(o == null) {
+        if (o == null) {
             return null;
         }
-        return new Blob(((Blob)o).UUID, ((Blob)o).type);
+        return new Blob(((Blob) o).UUID, ((Blob) o).type);
     }
 
     public boolean isMutable() {
@@ -132,21 +132,21 @@ public class Blob implements BinaryField, UserType {
     //
 
     public static String getUUID(String dbValue) {
-       return dbValue.split("[|]")[0];
+        return dbValue.split("[|]")[0];
     }
 
     public static File getStore() {
         String name = Play.configuration.getProperty("attachments.path", "attachments");
         File store = null;
-        if(new File(name).isAbsolute()) {
+        if (new File(name).isAbsolute()) {
             store = new File(name);
         } else {
             store = Play.getFile(name);
         }
-        if(!store.exists()) {
+        if (!store.exists()) {
             store.mkdirs();
         }
         return store;
     }
-    
+
 }

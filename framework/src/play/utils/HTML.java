@@ -48,6 +48,7 @@ public class HTML {
      * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
      * http://www.w3.org/TR/html4/sgml/entities.html
      * </a>
+     *
      * @param input the (unescaped) input string
      * @return the escaped string
      */
@@ -151,6 +152,6 @@ public class HTML {
                 return referredCharacter.charValue();
             }
             return CHAR_NULL;
-        } 
+        }
     }
 }

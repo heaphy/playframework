@@ -1,14 +1,14 @@
 package play.templates;
 
 public class GroovyInlineTags {
-    
+
     public enum CALL {
         START, END
     }
-    
+
     public static String _if(int index, CALL f) {
         StringBuilder s = new StringBuilder();
-        switch(f) {
+        switch (f) {
             case START:
                 s.append("if(attrs").append(index).append("['arg']) {");
                 break;
@@ -21,10 +21,10 @@ public class GroovyInlineTags {
         }
         return s.toString();
     }
-    
+
     public static String _ifnot(int index, CALL f) {
         StringBuilder s = new StringBuilder();
-        switch(f) {
+        switch (f) {
             case START:
                 s.append("if(!attrs").append(index).append("['arg']) {");
                 break;
@@ -37,10 +37,10 @@ public class GroovyInlineTags {
         }
         return s.toString();
     }
-    
+
     public static String _else(int index, CALL f) {
         StringBuilder s = new StringBuilder();
-        switch(f) {
+        switch (f) {
             case START:
                 s.append("if(play.templates.TagContext.parent().data.get('_executeNextElse')) {");
                 break;
@@ -51,10 +51,10 @@ public class GroovyInlineTags {
         }
         return s.toString();
     }
-    
+
     public static String _elseif(int index, CALL f) {
         StringBuilder s = new StringBuilder();
-        switch(f) {
+        switch (f) {
             case START:
                 s.append("if(play.templates.TagContext.parent().data.get('_executeNextElse') && attrs").append(index).append("['arg']) {");
                 break;
@@ -65,10 +65,10 @@ public class GroovyInlineTags {
         }
         return s.toString();
     }
-   
+
     public static String _list(int index, CALL f) {
         StringBuilder s = new StringBuilder();
-        switch(f) {
+        switch (f) {
             case START:
                 s.append("if(!attrs").append(index).append("['as']) {attrs").append(index).append("['as'] = '';};");
                 s.append("if(!attrs").append(index).append("['items']) {attrs").append(index).append("['items'] = attrs").append(index).append("['arg'];};");

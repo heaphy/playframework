@@ -1,8 +1,6 @@
 package play.mvc.results;
 
-import java.util.Map;
 import play.Logger;
-
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.MimeTypes;
@@ -11,6 +9,8 @@ import play.mvc.Http.Request;
 import play.mvc.Http.Response;
 import play.mvc.Scope;
 import play.templates.TemplateLoader;
+
+import java.util.Map;
 
 /**
  * 500 Error

@@ -7,14 +7,15 @@ import java.lang.annotation.Target;
 
 /**
  * Cache an action's result.
- *
+ * <p/>
  * <p>If a time is not specified, the results will be cached for 1 hour by default.
- *
+ * <p/>
  * <p>Example: <code>@CacheFor("1h")</code>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface CacheFor {
     String value() default "1h";
+
     String id() default "";
 }

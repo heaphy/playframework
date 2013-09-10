@@ -15,26 +15,25 @@ public class JdbcResultFactories {
 
 
     public static <T> JdbcResultFactory<T> build(Class<T> objectClass) {
-        return build(objectClass, (List<String>)null);
+        return build(objectClass, (List<String>) null);
     }
 
-    public static <T> JdbcResultFactory<T> build(Class<T> objectClass, String ... fields) {
+    public static <T> JdbcResultFactory<T> build(Class<T> objectClass, String... fields) {
         return build(objectClass, Arrays.asList(fields));
     }
 
     public static <T> JdbcResultFactory<T> build(Class<T> objectClass, List<String> fields) {
         return objectClass == Boolean.class
-            || objectClass == Character.class
-            || objectClass == Byte.class
-            || objectClass == Short.class
-            || objectClass == Integer.class
-            || objectClass == Long.class
-            || objectClass == Float.class
-            || objectClass == Double.class
+                || objectClass == Character.class
+                || objectClass == Byte.class
+                || objectClass == Short.class
+                || objectClass == Integer.class
+                || objectClass == Long.class
+                || objectClass == Float.class
+                || objectClass == Double.class
                 ? new PrimitiveFactory<T>(objectClass, fields)
                 : new ClassFactory<T>(objectClass, fields);
     }
-
 
 
     public static <T> JdbcResultFactory<T> buildPrimitive(Class<T> objectClass) {
@@ -50,19 +49,17 @@ public class JdbcResultFactories {
     }
 
 
-
     public static <T> JdbcResultFactory<T> buildClass(Class<T> objectClass) {
-        return buildClass(objectClass, (List<String>)null);
+        return buildClass(objectClass, (List<String>) null);
     }
 
-    public static <T> JdbcResultFactory<T> buildClass(Class<T> objectClass, String ... fields) {
+    public static <T> JdbcResultFactory<T> buildClass(Class<T> objectClass, String... fields) {
         return buildClass(objectClass, Arrays.asList(fields));
     }
 
     public static <T> JdbcResultFactory<T> buildClass(Class<T> objectClass, List<String> fields) {
         return new ClassFactory<T>(objectClass, fields);
     }
-
 
 
     public static class PrimitiveFactory<T> implements JdbcResultFactory<T> {
@@ -106,7 +103,7 @@ public class JdbcResultFactories {
         @SuppressWarnings("unchecked")
         public T create(ResultSet result) throws SQLException {
             Object value = result.getObject(columnIndex);
-            if (value instanceof BigDecimal) value = new Long(((BigDecimal)value).longValue());
+            if (value instanceof BigDecimal) value = new Long(((BigDecimal) value).longValue());
             if (!objectClass.isInstance(value)) throw new IllegalArgumentException();
             return (T) value;
         }
@@ -130,7 +127,7 @@ public class JdbcResultFactories {
                 int count = meta.getColumnCount();
                 for (int i = 1; i <= count; i++) {
                     String label = meta.getColumnLabel(i);
-                    if (label.length()>0) fields.add(label);
+                    if (label.length() > 0) fields.add(label);
                 }
             }
         }
@@ -140,7 +137,7 @@ public class JdbcResultFactories {
                 T obj = objectClass.newInstance();
                 for (String field : fields) {
                     Object value = result.getObject(field);
-                    if (value instanceof BigDecimal) value = new Long(((BigDecimal)value).longValue());
+                    if (value instanceof BigDecimal) value = new Long(((BigDecimal) value).longValue());
                     objectClass.getDeclaredField(field).set(obj, value);
                 }
                 return obj;

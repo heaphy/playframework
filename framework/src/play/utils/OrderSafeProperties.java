@@ -35,15 +35,15 @@ public class OrderSafeProperties extends java.util.Properties {
             // by a backslash still yield single and double quote characters, respectively."
             // we must transform \" => " and \' => ' before escaping to prevent escaping the backslash
             line = line.replaceAll("\\\\\"", "\"").replaceAll("(^|[^\\\\])(\\\\')", "$1'");
-            
-            String escapedLine = StringEscapeUtils.escapeJava( line ) + "\n";
+
+            String escapedLine = StringEscapeUtils.escapeJava(line) + "\n";
             // remove escaped backslashes
-            escapedLine = escapedLine.replaceAll("\\\\\\\\","\\\\");
-            out.write( escapedLine.getBytes("iso-8859-1"));
+            escapedLine = escapedLine.replaceAll("\\\\\\\\", "\\\\");
+            out.write(escapedLine.getBytes("iso-8859-1"));
         }
 
         // read properties-file with regular java.util.Properties impl
-        super.load( new ByteArrayInputStream( out.toByteArray()) );
+        super.load(new ByteArrayInputStream(out.toByteArray()));
     }
 
     @Override

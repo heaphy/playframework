@@ -1,13 +1,14 @@
 package play.db;
 
+import play.Logger;
+import play.db.jpa.JPA;
+import play.exceptions.DatabaseException;
+
+import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.sql.DataSource;
-import play.db.jpa.JPA;
-import play.exceptions.DatabaseException;
-import play.Logger;
 
 /**
  * Database connection utilities.
@@ -38,10 +39,12 @@ public class DB {
             }
         }
     }
+
     static ThreadLocal<Connection> localConnection = new ThreadLocal<Connection>();
 
     /**
      * Open a connection for the current thread.
+     *
      * @return A valid SQL connection
      */
     @SuppressWarnings("deprecation")
@@ -68,6 +71,7 @@ public class DB {
 
     /**
      * Execute an SQL update
+     *
      * @param SQL
      * @return false if update failed
      */
@@ -81,6 +85,7 @@ public class DB {
 
     /**
      * Execute an SQL query
+     *
      * @param SQL
      * @return The query resultSet
      */
@@ -98,15 +103,15 @@ public class DB {
     public static void destroy() {
         try {
             if (DB.datasource != null && DB.destroyMethod != null && !DB.destroyMethod.equals("")) {
-                Method close = DB.datasource.getClass().getMethod(DB.destroyMethod, new Class[] {});
+                Method close = DB.datasource.getClass().getMethod(DB.destroyMethod, new Class[]{});
                 if (close != null) {
-                    close.invoke(DB.datasource, new Object[] {});
+                    close.invoke(DB.datasource, new Object[]{});
                     DB.datasource = null;
                     Logger.trace("Datasource destroyed");
                 }
             }
         } catch (Throwable t) {
-             Logger.error("Couldn't destroy the datasource", t);
+            Logger.error("Couldn't destroy the datasource", t);
         }
     }
 }

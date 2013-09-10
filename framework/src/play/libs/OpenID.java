@@ -1,24 +1,23 @@
 package play.libs;
 
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
+import play.Logger;
+import play.exceptions.PlayException;
+import play.libs.WS.HttpResponse;
+import play.mvc.Http.Request;
+import play.mvc.Router;
+import play.mvc.Scope.Params;
+import play.mvc.results.Redirect;
+
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import play.Logger;
-import play.exceptions.PlayException;
-import play.libs.WS.HttpResponse;
-import play.mvc.Router;
-import play.mvc.Http.Request;
-import play.mvc.Scope.Params;
-import play.mvc.results.Redirect;
 
 public class OpenID {
 
@@ -26,6 +25,7 @@ public class OpenID {
         this.id = id;
         this.returnAction = this.realmAction = Request.current().action;
     }
+
     // ~~~ API
     String id;
     String returnAction;
@@ -148,16 +148,16 @@ public class OpenID {
             }
             String sregO = "";
             for (String a : sregOptional) {
-               sregO += URLEncoder.encode(a, "UTF-8") + ",";
+                sregO += URLEncoder.encode(a, "UTF-8") + ",";
             }
             if (!StringUtils.isEmpty(sregO)) {
-               url += "&openid.sreg.optional=" + sregO.substring(0, sregO.length() - 1);
+                url += "&openid.sreg.optional=" + sregO.substring(0, sregO.length() - 1);
             }
             String sregR = "";
             for (String a : sregRequired) {
-               sregR +=  URLEncoder.encode(a, "UTF-8") + ",";
+                sregR += URLEncoder.encode(a, "UTF-8") + ",";
             }
-             if (!StringUtils.isEmpty(sregR)) {
+            if (!StringUtils.isEmpty(sregR)) {
                 url += "&openid.sreg.required=" + sregR.substring(0, sregR.length() - 1);
             }
 
@@ -242,6 +242,7 @@ public class OpenID {
 
     /**
      * Retrieve the verified OpenID
+     *
      * @return A UserInfo object
      */
     public static UserInfo getVerifiedID() {

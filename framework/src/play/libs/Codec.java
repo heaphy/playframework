@@ -1,13 +1,13 @@
 package play.libs;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.util.UUID;
-
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import play.exceptions.UnexpectedException;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.util.UUID;
 
 /**
  * Codec utils
@@ -23,6 +23,7 @@ public class Codec {
 
     /**
      * Encode a String to base64
+     *
      * @param value The plain String
      * @return The base64 encoded String
      */
@@ -35,7 +36,8 @@ public class Codec {
     }
 
     /**
-     * Encode binary data to base64 
+     * Encode binary data to base64
+     *
      * @param value The binary data
      * @return The base64 encoded String
      */
@@ -45,6 +47,7 @@ public class Codec {
 
     /**
      * Decode a base64 value
+     *
      * @param value The base64 encoded String
      * @return decoded binary data
      */
@@ -58,6 +61,7 @@ public class Codec {
 
     /**
      * Build an hexadecimal MD5 hash for a String
+     *
      * @param value The String to hash
      * @return An hexadecimal Hash
      */
@@ -75,9 +79,10 @@ public class Codec {
 
     /**
      * Build an hexadecimal SHA1 hash for a String
+     *
      * @param value The String to hash
      * @return An hexadecimal Hash
-     */    
+     */
     public static String hexSHA1(String value) {
         try {
             MessageDigest md;

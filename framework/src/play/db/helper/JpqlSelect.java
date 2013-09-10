@@ -16,7 +16,7 @@ public class JpqlSelect extends SqlSelect {
         if (!limit.isEmpty()) throw new IllegalArgumentException();
 
         if (select.isEmpty() && from.isEmpty()) where.prefix("");
-        return new Concat(""," ").defaultValue(null)
+        return new Concat("", " ").defaultValue(null)
                 .append(select)
                 .append(from)
                 .append(where)

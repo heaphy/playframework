@@ -11,13 +11,31 @@ public abstract class SqlQuery {
         params = new ArrayList<Object>();
     }
 
-    public SqlQuery param(Object obj) { params.add(obj); return this; }
-    public SqlQuery params(Object ... objs) { for (Object obj : objs) params.add(obj); return this; }
-    public List<Object> getParams() { return params; }
+    public SqlQuery param(Object obj) {
+        params.add(obj);
+        return this;
+    }
 
-    public int paramCurrentIndex() { return params.size()+1; }
-    public String pmark() { return "?"+Integer.toString(paramCurrentIndex()); }
-    public String pmark(int offset) { return "?"+Integer.toString(paramCurrentIndex()+offset); }
+    public SqlQuery params(Object... objs) {
+        for (Object obj : objs) params.add(obj);
+        return this;
+    }
+
+    public List<Object> getParams() {
+        return params;
+    }
+
+    public int paramCurrentIndex() {
+        return params.size() + 1;
+    }
+
+    public String pmark() {
+        return "?" + Integer.toString(paramCurrentIndex());
+    }
+
+    public String pmark(int offset) {
+        return "?" + Integer.toString(paramCurrentIndex() + offset);
+    }
 
     public static class Concat {
         private String prefix, separator, suffix;
@@ -77,13 +95,13 @@ public abstract class SqlQuery {
             return this;
         }
 
-        public Concat add(String ... texts) {
+        public Concat add(String... texts) {
             for (String text : texts) append(text);
             return this;
         }
 
         public boolean isEmpty() {
-            return expr.length()<=0;
+            return expr.length() <= 0;
         }
 
         @Override
@@ -95,7 +113,7 @@ public abstract class SqlQuery {
     }
 
     public static String quote(String str) {
-        return "'" + str.replace("'","\\'") + "'";
+        return "'" + str.replace("'", "\\'") + "'";
     }
 
     public static String inlineParam(Object param) {
@@ -105,11 +123,11 @@ public abstract class SqlQuery {
         if (param instanceof String) str = quote(param.toString());
         else if (param instanceof Iterable<?>) {
             Concat list = new Concat("(", ", ", ")");
-            for (Object p : (Iterable<?>)param) list.append(inlineParam(p));
+            for (Object p : (Iterable<?>) param) list.append(inlineParam(p));
             str = list.toString();
         } else if (param instanceof Object[]) {
             Concat list = new Concat("(", ", ", ")");
-            for (Object p : (Object[])param) list.append(inlineParam(p));
+            for (Object p : (Object[]) param) list.append(inlineParam(p));
             str = list.toString();
         } else if (param instanceof Enum<?>) {
             str = quote(param.toString());
