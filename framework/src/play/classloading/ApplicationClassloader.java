@@ -86,7 +86,7 @@ public class ApplicationClassloader extends ClassLoader {
 
     // ~~~~~~~~~~~~~~~~~~~~~~~
     public Class<?> loadApplicationClass(String name) {
-
+        System.out.println("ApplicationClassloader.loadApplicationClass(" + name + ")");
         Class maybeAlreadyLoaded = findLoadedClass(name);
         if (maybeAlreadyLoaded != null) {
             return maybeAlreadyLoaded;
@@ -227,6 +227,7 @@ public class ApplicationClassloader extends ClassLoader {
      */
     @Override
     public InputStream getResourceAsStream(String name) {
+        System.out.println("ApplicationClassloader.getResourceAsStream(" + name + ")");
         for (VirtualFile vf : Play.javaPath) {
             VirtualFile res = vf.child(name);
             if (res != null && res.exists()) {
@@ -241,6 +242,7 @@ public class ApplicationClassloader extends ClassLoader {
      */
     @Override
     public URL getResource(String name) {
+        System.out.println("ApplicationClassloader.getResource(" + name + ")");
         for (VirtualFile vf : Play.javaPath) {
             VirtualFile res = vf.child(name);
             if (res != null && res.exists()) {
@@ -259,6 +261,7 @@ public class ApplicationClassloader extends ClassLoader {
      */
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
+        System.out.println("ApplicationClassloader.getResource(" + name + ")");
         List<URL> urls = new ArrayList<URL>();
         for (VirtualFile vf : Play.javaPath) {
             VirtualFile res = vf.child(name);
@@ -294,6 +297,7 @@ public class ApplicationClassloader extends ClassLoader {
      * Detect Java changes
      */
     public void detectChanges() {
+        System.out.println("ApplicationClassloader.detectChanges()");
         // Now check for file modification
         List<ApplicationClass> modifieds = new ArrayList<ApplicationClass>();
         for (ApplicationClass applicationClass : Play.classes.all()) {
@@ -381,6 +385,7 @@ public class ApplicationClassloader extends ClassLoader {
      * @return The list of well defined Class
      */
     public List<Class> getAllClasses() {
+        System.out.println("ApplicationClassloader.getAllClasses()");
         if (allClasses == null) {
             allClasses = new ArrayList<Class>();
 
@@ -445,6 +450,7 @@ public class ApplicationClassloader extends ClassLoader {
      * @return A list of class
      */
     public List<Class> getAssignableClasses(Class clazz) {
+        System.out.println("ApplicationClassloader.getAssignableClasses(Class)");
         getAllClasses();
         List<Class> results = new ArrayList<Class>();
         for (ApplicationClass c : Play.classes.getAssignableClasses(clazz)) {
@@ -460,6 +466,7 @@ public class ApplicationClassloader extends ClassLoader {
      * @return a class
      */
     public Class getClassIgnoreCase(String name) {
+        System.out.println("ApplicationClassloader.getClassIgnoreCase(" + name + ")");
         getAllClasses();
         for (ApplicationClass c : Play.classes.all()) {
             if (c.name.equalsIgnoreCase(name) || c.name.replace("$", ".").equalsIgnoreCase(name)) {
@@ -505,10 +512,12 @@ public class ApplicationClassloader extends ClassLoader {
     }
 
     List<ApplicationClass> getAllClasses(VirtualFile path) {
+        System.out.println("ApplicationClassloader.getAllClasses(" + path + ")");
         return getAllClasses(path, "");
     }
 
     List<ApplicationClass> getAllClasses(VirtualFile path, String basePackage) {
+        System.out.println("ApplicationClassloader.getAllClasses(" + path + ", " + basePackage + ")");
         if (basePackage.length() > 0 && !basePackage.endsWith(".")) {
             basePackage += ".";
         }
@@ -520,6 +529,7 @@ public class ApplicationClassloader extends ClassLoader {
     }
 
     void scan(List<ApplicationClass> classes, String packageName, VirtualFile current) {
+        System.out.println("ApplicationClassloader.scan(List<ApplicationClass>, " + packageName + ", " + current + ")");
         if (!current.isDirectory()) {
             if (current.getName().endsWith(".java") && !current.getName().startsWith(".")) {
                 String classname = packageName + current.getName().substring(0, current.getName().length() - 5);
@@ -533,6 +543,7 @@ public class ApplicationClassloader extends ClassLoader {
     }
 
     void scanPrecompiled(List<ApplicationClass> classes, String packageName, VirtualFile current) {
+        System.out.println("ApplicationClassloader.scanPrecompiled(List<ApplicationClass>, " + packageName + ", " + current + ")");
         if (!current.isDirectory()) {
             if (current.getName().endsWith(".class") && !current.getName().startsWith(".")) {
                 String classname = packageName.substring(5) + current.getName().substring(0, current.getName().length() - 6);

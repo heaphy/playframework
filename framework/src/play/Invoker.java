@@ -195,6 +195,7 @@ public class Invoker {
                 if (Play.mode == Mode.PROD) {
                     throw new UnexpectedException("Application is not started");
                 }
+                System.out.println("Invoker Play.start()");
                 Play.start();
             }
             InvocationContext.current.set(getInvocationContext());

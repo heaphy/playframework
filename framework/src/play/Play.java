@@ -212,6 +212,8 @@ public class Play {
      * @param id   The framework id to use
      */
     public static void init(File root, String id) {
+        System.out.println("init()");
+
         // Simple things
         Play.id = id;
         Play.started = false;
@@ -225,6 +227,7 @@ public class Play {
         // Read the configuration file
         readConfiguration();
 
+        //classes.size = 0
         Play.classes = new ApplicationClasses();
 
         // Configure logs
@@ -300,7 +303,9 @@ public class Play {
         modulesRoutes = new HashMap<String, VirtualFile>(16);
 
         // Load modules
+        System.out.println("before loadModules()");
         loadModules();
+        System.out.println("after loadModules()");
 
         // Load the templates from the framework after the one from the modules
         templatesPath.add(VirtualFile.open(new File(frameworkPath, "framework/templates")));
@@ -320,7 +325,9 @@ public class Play {
         }
 
         // Plugins
+        System.out.println("before pluginCollection.loadPlugins()");
         pluginCollection.loadPlugins();
+        System.out.println("after pluginCollection.loadPlugins()");
 
         // 只要是生产模式，必须先预编译，如果是启用precompiled，则默认是生产模式
         // precompile时只执行preCompile，而不会start
@@ -336,12 +343,18 @@ public class Play {
         }
 
         // Plugins
+        System.out.println("before pluginCollection.onApplicationReady()");
         pluginCollection.onApplicationReady();
+        System.out.println("after pluginCollection.onApplicationReady()");
 
         Play.initialized = true;
     }
 
+    /**
+     * 获取框架路径
+     */
     public static void guessFrameworkPath() {
+        System.out.println("guessFrameworkPath()");
         // Guess the framework path
         try {
             URL versionUrl = Play.class.getResource("/play/version");
@@ -366,9 +379,10 @@ public class Play {
     }
 
     /**
-     * Read application.conf and resolve overriden key using the play id mechanism.
+     * 读取application.conf配置文件，包括@include的配置
      */
     public static void readConfiguration() {
+        System.out.println("readConfiguration()");
         configuration = readOneConfigurationFile("application.conf", new HashSet<String>());
         // Plugins
         pluginCollection.onConfigurationRead();
@@ -376,6 +390,7 @@ public class Play {
 
 
     private static Properties readOneConfigurationFile(String filename, Set<String> seenFileNames) {
+        System.out.println("readOneConfigurationFile()");
 
         if (seenFileNames.contains(filename)) {
             throw new RuntimeException("Detected recursive @include usage. Have seen the file " + filename + " before");
@@ -463,7 +478,7 @@ public class Play {
      * Recall to restart !
      */
     public static synchronized void start() {
-        System.out.println("in start");
+        System.out.println("start()");
         try {
 
             if (started) {
@@ -486,6 +501,7 @@ public class Play {
 
             if (mode == Mode.DEV) {
                 // Need a new classloader
+                //TODO: 为什么需要重新new一个？
                 classloader = new ApplicationClassloader();
                 // Reload plugins
                 pluginCollection.reloadApplicationPlugins();
@@ -530,7 +546,6 @@ public class Play {
                     Http.Response.current().encoding = _defaultWebEncoding;
                 }
             }
-
 
             // Try to load all classes
             Play.classloader.getAllClasses();
@@ -587,6 +602,7 @@ public class Play {
      * Stop the application
      */
     public static synchronized void stop() {
+        System.out.println("stop()");
         if (started) {
             Logger.trace("Stopping the play application");
             pluginCollection.onApplicationStop();
@@ -602,6 +618,7 @@ public class Play {
      * @return success ?
      */
     static boolean preCompile() {
+        System.out.println("preCompile()");
         if (usePrecompiled) {
             if (Play.getFile("precompiled").exists()) {
                 //只要启用precompiled配置，则一定调用classloader.getAllClasses()
@@ -643,6 +660,7 @@ public class Play {
      * Detect sources modifications
      */
     public static synchronized void detectChanges() {
+        System.out.println("detectChanges()");
         if (mode == Mode.PROD) {
             return;
         }
@@ -670,14 +688,16 @@ public class Play {
 
     @SuppressWarnings("unchecked")
     public static <T> T plugin(Class<T> clazz) {
+        System.out.println("plugin()");
         return (T) pluginCollection.getPluginInstance((Class<? extends PlayPlugin>) clazz);
     }
 
 
     /**
-     * Allow some code to run very early in Play - Use with caution !
+     * 允许某些代码在运行前被加载
      */
     public static void initStaticStuff() {
+        System.out.println("initStaticStuff()");
         // Play! plugings
         Enumeration<URL> urls = null;
         try {
@@ -703,10 +723,10 @@ public class Play {
     }
 
     /**
-     * Load all modules.
-     * You can even specify the list using the MODULES environement variable.
+     * 加载所有模块到Play.modules
      */
     public static void loadModules() {
+        System.out.println("loadModules()");
         if (System.getenv("MODULES") != null) {
             // Modules path is prepended with a env property
             if (System.getenv("MODULES") != null && System.getenv("MODULES").trim().length() > 0) {
@@ -758,7 +778,6 @@ public class Play {
                     } else {
                         addModule(moduleName, modulePath);
                     }
-
                 }
             }
         }
@@ -777,6 +796,7 @@ public class Play {
      * @param path The application path
      */
     public static void addModule(String name, File path) {
+        System.out.println("addModule(" + name + ", " + path + ")");
         VirtualFile root = VirtualFile.open(path);
         modules.put(name, root);
         if (root.child("app").exists()) {

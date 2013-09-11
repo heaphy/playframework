@@ -1,23 +1,23 @@
-02 Dec 2011 14:41:02,260 DEBUG ~ Creating new CacheManager with default config
-02 Dec 2011 14:41:02,263 DEBUG ~ Configuring ehcache from classpath.
-02 Dec 2011 14:41:02,266 DEBUG ~ Configuring ehcache from ehcache.xml found in the classpath: file:/Volumes/Data/gbo/Desktop/play/head/framework/classes/ehcache.xml
-02 Dec 2011 14:41:02,268 DEBUG ~ Configuring ehcache from URL: file:/Volumes/Data/gbo/Desktop/play/head/framework/classes/ehcache.xml
-02 Dec 2011 14:41:02,268 DEBUG ~ Configuring ehcache from InputStream
-02 Dec 2011 14:41:02,291 DEBUG ~ Ignoring ehcache attribute xmlns:xsi
-02 Dec 2011 14:41:02,291 DEBUG ~ Ignoring ehcache attribute xsi:noNamespaceSchemaLocation
-02 Dec 2011 14:41:02,294 DEBUG ~ Disk Store Path: /var/folders/vX/vXQj3rRrH7CZDHXT3WOoLU+++TI/-Tmp-/
-02 Dec 2011 14:41:02,306 DEBUG ~ propertiesString is null.
-02 Dec 2011 14:41:02,309 DEBUG ~ No disk store path defined. Skipping disk store path conflict test.
-02 Dec 2011 14:41:02,309 DEBUG ~ No CacheManagerEventListenerFactory class specified. Skipping...
-02 Dec 2011 14:41:02,357 DEBUG ~ No BootstrapCacheLoaderFactory class specified. Skipping...
-02 Dec 2011 14:41:02,357 DEBUG ~ CacheWriter factory not configured. Skipping...
-02 Dec 2011 14:41:02,357 DEBUG ~ No CacheExceptionHandlerFactory class specified. Skipping...
-02 Dec 2011 14:41:02,367 DEBUG ~ Initialized net.sf.ehcache.store.MemoryStore for play
-02 Dec 2011 14:41:02,369 DEBUG ~ Initialised cache: play
-02 Dec 2011 14:41:02,369 DEBUG ~ playCache: playMemoryStore miss for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
-02 Dec 2011 14:41:02,369 DEBUG ~ play cache - Miss
-02 Dec 2011 14:41:02,473 DEBUG ~ playCache: playMemoryStore hit for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
-02 Dec 2011 14:41:02,574 DEBUG ~ playCache: playMemoryStore hit for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
-02 Dec 2011 14:41:03,524 DEBUG ~ playCache: playMemoryStore hit for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
-02 Dec 2011 14:41:03,684 DEBUG ~ play Memory cache hit, but element expired
-02 Dec 2011 14:41:03,685 DEBUG ~ play cache - Miss
+10 九月 2013 16:27:52,288 DEBUG ~ Creating new CacheManager with default config
+10 九月 2013 16:27:52,292 DEBUG ~ Configuring ehcache from classpath.
+10 九月 2013 16:27:52,297 DEBUG ~ Configuring ehcache from ehcache.xml found in the classpath: file:/Users/heaphy/local/play-1.2.4/framework/classes/ehcache.xml
+10 九月 2013 16:27:52,301 DEBUG ~ Configuring ehcache from URL: file:/Users/heaphy/local/play-1.2.4/framework/classes/ehcache.xml
+10 九月 2013 16:27:52,301 DEBUG ~ Configuring ehcache from InputStream
+10 九月 2013 16:27:52,317 DEBUG ~ Ignoring ehcache attribute xmlns:xsi
+10 九月 2013 16:27:52,317 DEBUG ~ Ignoring ehcache attribute xsi:noNamespaceSchemaLocation
+10 九月 2013 16:27:52,321 DEBUG ~ Disk Store Path: /var/folders/81/jjm8cvq945bb1k07fkj6g7jw0000gn/T/
+10 九月 2013 16:27:52,338 DEBUG ~ propertiesString is null.
+10 九月 2013 16:27:52,342 DEBUG ~ No disk store path defined. Skipping disk store path conflict test.
+10 九月 2013 16:27:52,342 DEBUG ~ No CacheManagerEventListenerFactory class specified. Skipping...
+10 九月 2013 16:27:52,555 DEBUG ~ No BootstrapCacheLoaderFactory class specified. Skipping...
+10 九月 2013 16:27:52,555 DEBUG ~ CacheWriter factory not configured. Skipping...
+10 九月 2013 16:27:52,555 DEBUG ~ No CacheExceptionHandlerFactory class specified. Skipping...
+10 九月 2013 16:27:52,571 DEBUG ~ Initialized net.sf.ehcache.store.MemoryStore for play
+10 九月 2013 16:27:52,574 DEBUG ~ Initialised cache: play
+10 九月 2013 16:27:52,575 DEBUG ~ playCache: playMemoryStore miss for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
+10 九月 2013 16:27:52,575 DEBUG ~ play cache - Miss
+10 九月 2013 16:27:52,681 DEBUG ~ playCache: playMemoryStore hit for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
+10 九月 2013 16:27:52,782 DEBUG ~ playCache: playMemoryStore hit for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
+10 九月 2013 16:27:53,732 DEBUG ~ playCache: playMemoryStore hit for EhCacheImplTest_verifyThatTTLSurvivesIncrDecr
+10 九月 2013 16:27:53,892 DEBUG ~ play Memory cache hit, but element expired
+10 九月 2013 16:27:53,892 DEBUG ~ play cache - Miss
